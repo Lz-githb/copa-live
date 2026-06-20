@@ -11,15 +11,11 @@ SECTIONS {
         *(.text.start)
         *(.text*)
         *(.rodata*)
+        *(.data*)
         . = ALIGN(4);
     } > rom
 
-    .data : {
-        *(.data*)
-        . = ALIGN(4);
-    } > iwram
-
-    .bss : {
+    .bss (NOLOAD) : {
         __bss_start__ = .;
         *(.bss*)
         *(COMMON)

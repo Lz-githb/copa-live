@@ -7,7 +7,7 @@ OBJCOPY = $(PREFIX)objcopy
 CFLAGS  = -mthumb-interwork -marm -O2 -fno-builtin -nostdlib \
           -march=armv4t -mcpu=arm7tdmi -Wall
 
-LDFLAGS = -T gba.ld -nostdlib
+LDFLAGS = -T gba.ld -nostdlib -lgcc
 
 OBJS = crt0.o src/main.o
 
