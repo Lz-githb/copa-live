@@ -14,6 +14,7 @@
 typedef unsigned short u16;
 typedef unsigned int   u32;
 typedef unsigned char  u8;
+typedef signed char    s8;
 typedef signed short   s16;
 typedef signed int     s32;
 
@@ -405,8 +406,8 @@ static int tt_update(void) {
 #define SN_COLS  29
 #define SN_ROWS  18
 #define SN_CELL  8
-#define SN_OX    6    // offset x da grade
-#define SN_OY    14   // offset y da grade
+#define SN_OX    6
+#define SN_OY    14
 #define SN_MAX   (SN_COLS*SN_ROWS)
 
 typedef struct { s16 x,y; } Vec2;
@@ -418,17 +419,41 @@ static Vec2  sn_food;
 static s32   sn_score;
 static s32   sn_speed, sn_tick;
 static s32   sn_dead;
-static s32   sn_grow;
+static s32   sn_ai_mode;  // 0=jogador 1=computador
+
+// Ciclo hamiltoniano: direção a seguir em cada célula
+// Construído via espiral retangular — cobre 100% do mapa, nunca trava
+static s8 sn_ham_dx[SN_ROWS][SN_COLS];
+static s8 sn_ham_dy[SN_ROWS][SN_COLS];
+// Buffer estático para evitar stack overflow (522 posições * 2)
+static s16 sn_ham_px[SN_MAX];
+static s16 sn_ham_py[SN_MAX];
+
+static void sn_build_hamilton(void) {
+    // Percorre o mapa em espiral e salva a sequência de posições
+    s32 n=0;
+    s32 top=0, bot=SN_ROWS-1, lft=0, rgt=SN_COLS-1;
+    while(top<=bot && lft<=rgt){
+        for(s32 c=lft;c<=rgt;c++){sn_ham_px[n]=c;sn_ham_py[n]=top;n++;}  top++;
+        for(s32 r=top;r<=bot;r++){sn_ham_px[n]=rgt;sn_ham_py[n]=r;n++;}  rgt--;
+        if(top<=bot){for(s32 c=rgt;c>=lft;c--){sn_ham_px[n]=c;sn_ham_py[n]=bot;n++;} bot--;}
+        if(lft<=rgt){for(s32 r=bot;r>=top;r--){sn_ham_px[n]=lft;sn_ham_py[n]=r;n++;} lft++;}
+    }
+    // Converte sequência em tabela de direções
+    for(s32 i=0;i<n;i++){
+        s32 ni=(i+1)%n;
+        sn_ham_dx[sn_ham_py[i]][sn_ham_px[i]] = (s8)(sn_ham_px[ni]-sn_ham_px[i]);
+        sn_ham_dy[sn_ham_py[i]][sn_ham_px[i]] = (s8)(sn_ham_py[ni]-sn_ham_py[i]);
+    }
+}
 
 static void sn_place_food(void) {
-    // Tenta posições aleatórias até achar uma livre
-    for(s32 attempts=0; attempts<200; attempts++){
-        s32 fx = (s32)(rng() & 0xFFFF) * SN_COLS >> 16;
-        s32 fy = (s32)(rng() & 0xFFFF) * SN_ROWS >> 16;
-        // Verifica se não colide com o corpo
+    for(s32 att=0; att<400; att++){
+        s32 fx = (s32)(rng()&0xFFFF)*SN_COLS>>16;
+        s32 fy = (s32)(rng()&0xFFFF)*SN_ROWS>>16;
         s32 hit=0, i=sn_tail;
         for(s32 k=0;k<sn_len;k++){
-            if(sn_body[i].x==fx && sn_body[i].y==fy){hit=1;break;}
+            if(sn_body[i].x==fx&&sn_body[i].y==fy){hit=1;break;}
             i=(i+1)%SN_MAX;
         }
         if(!hit){sn_food.x=fx;sn_food.y=fy;return;}
@@ -442,23 +467,25 @@ static void sn_draw_cell(s32 x, s32 y, u16 col) {
 static void sn_draw_food(void) {
     s32 px=SN_OX+sn_food.x*SN_CELL, py=SN_OY+sn_food.y*SN_CELL;
     fill_rect(px+2,py+2,SN_CELL-4,SN_CELL-4,COL_RED);
-    put_pixel(px+SN_CELL/2,py+1,COL_GREEN); // haste
+    put_pixel(px+SN_CELL/2,py+1,COL_GREEN);
 }
 
 static void sn_draw_board(void) {
     static const Char title[]={CH_S,CH_N,CH_A,CH_K,CH_E};
     draw_titlebar(title,5,COL_GREEN,COL_DGRAY);
-    // Borda da área de jogo
     fill_rect(SN_OX-2,SN_OY-2,SN_COLS*SN_CELL+4,2,COL_GRID);
     fill_rect(SN_OX-2,SN_OY+SN_ROWS*SN_CELL,SN_COLS*SN_CELL+4,2,COL_GRID);
     fill_rect(SN_OX-2,SN_OY-2,2,SN_ROWS*SN_CELL+4,COL_GRID);
     fill_rect(SN_OX+SN_COLS*SN_CELL,SN_OY-2,2,SN_ROWS*SN_CELL+4,COL_GRID);
-    // Placar
     s32 sx=SN_OX+SN_COLS*SN_CELL+6;
     fill_rect(sx,12,SCREEN_W-sx,SCREEN_H-12,COL_BG);
     static const Char sc[]={CH_S,CH_C,CH_O,CH_R,CH_E};
     draw_str(sx,18,sc,5,COL_WHITE);
     draw_num(sx,30,sn_score,COL_GREEN);
+    if(sn_ai_mode){
+        static const Char ai[]={CH_I,CH_A};
+        draw_str(sx,44,ai,2,COL_PURPLE);
+    }
     static const Char ctrl[]={CH_S,CH_E,CH_L};
     draw_str(sx,SCREEN_H-14,ctrl,3,COL_DGRAY);
 }
@@ -468,11 +495,11 @@ static void sn_init(void) {
     for(s32 i=0;i<4;i++){sn_body[i].x=SN_COLS/2-2+i;sn_body[i].y=SN_ROWS/2;}
     sn_dir.x=1;sn_dir.y=0;
     sn_next_dir=sn_dir;
-    sn_score=0; sn_speed=8; sn_tick=0; sn_dead=0; sn_grow=0;
+    sn_score=0; sn_speed=sn_ai_mode?1:8; sn_tick=0; sn_dead=0;
+    if(sn_ai_mode) sn_build_hamilton();
     sn_place_food();
     fill_rect(SN_OX,SN_OY,SN_COLS*SN_CELL,SN_ROWS*SN_CELL,COL_BG);
     sn_draw_board();
-    // Desenha cobra inicial
     s32 i=sn_tail;
     for(s32 k=0;k<sn_len;k++){
         sn_draw_cell(sn_body[i].x,sn_body[i].y,k==sn_len-1?COL_GREEN:COL_CYAN);
@@ -482,17 +509,22 @@ static void sn_init(void) {
 }
 
 static int sn_update(void) {
-    // Input
-    if((keys_down|keys_held)&KEY_UP    && sn_dir.y==0){sn_next_dir.x=0;sn_next_dir.y=-1;}
-    if((keys_down|keys_held)&KEY_DOWN  && sn_dir.y==0){sn_next_dir.x=0;sn_next_dir.y= 1;}
-    if((keys_down|keys_held)&KEY_LEFT  && sn_dir.x==0){sn_next_dir.x=-1;sn_next_dir.y=0;}
-    if((keys_down|keys_held)&KEY_RIGHT && sn_dir.x==0){sn_next_dir.x= 1;sn_next_dir.y=0;}
     if(keys_down&KEY_SELECT) return 0;
 
+    // Modo IA: reinicia automaticamente ao completar
     if(sn_dead){
-        if(keys_down&KEY_A||keys_down&KEY_START){
-            fill_rect(SN_OX,SN_OY,SN_COLS*SN_CELL,SN_ROWS*SN_CELL,COL_BG);
-            sn_init();
+        if(sn_ai_mode){
+            // Pausa breve exibindo "ZEROU!" então reinicia
+            sn_tick++;
+            if(sn_tick>120){
+                fill_rect(SN_OX,SN_OY,SN_COLS*SN_CELL,SN_ROWS*SN_CELL,COL_BG);
+                sn_init();
+            }
+        } else {
+            if(keys_down&KEY_A||keys_down&KEY_START){
+                fill_rect(SN_OX,SN_OY,SN_COLS*SN_CELL,SN_ROWS*SN_CELL,COL_BG);
+                sn_init();
+            }
         }
         return 1;
     }
@@ -501,56 +533,68 @@ static int sn_update(void) {
     if(sn_tick < sn_speed) return 1;
     sn_tick=0;
 
-    sn_dir=sn_next_dir;
+    // Direção: IA segue ciclo hamiltoniano, jogador usa D-pad
+    if(sn_ai_mode){
+        Vec2 h=sn_body[sn_head];
+        sn_dir.x=sn_ham_dx[h.y][h.x];
+        sn_dir.y=sn_ham_dy[h.y][h.x];
+    } else {
+        if((keys_down|keys_held)&KEY_UP    && sn_dir.y==0){sn_next_dir.x=0;sn_next_dir.y=-1;}
+        if((keys_down|keys_held)&KEY_DOWN  && sn_dir.y==0){sn_next_dir.x=0;sn_next_dir.y= 1;}
+        if((keys_down|keys_held)&KEY_LEFT  && sn_dir.x==0){sn_next_dir.x=-1;sn_next_dir.y=0;}
+        if((keys_down|keys_held)&KEY_RIGHT && sn_dir.x==0){sn_next_dir.x= 1;sn_next_dir.y=0;}
+        sn_dir=sn_next_dir;
+    }
+
     Vec2 head=sn_body[sn_head];
     Vec2 nxt={head.x+sn_dir.x, head.y+sn_dir.y};
 
-    // Colisão com paredes
-    if(nxt.x<0||nxt.x>=SN_COLS||nxt.y<0||nxt.y>=SN_ROWS) { sn_dead=1; goto dead; }
-    // Colisão consigo mesmo
-    s32 i=sn_tail;
+    if(nxt.x<0||nxt.x>=SN_COLS||nxt.y<0||nxt.y>=SN_ROWS){sn_dead=1;goto dead;}
+    {s32 i=sn_tail;
     for(s32 k=0;k<sn_len;k++){
         if(sn_body[i].x==nxt.x&&sn_body[i].y==nxt.y){sn_dead=1;goto dead;}
         i=(i+1)%SN_MAX;
-    }
+    }}
 
-    // Avança
     sn_head=(sn_head+1)%SN_MAX;
     sn_body[sn_head]=nxt;
 
-    // Comeu comida?
     if(nxt.x==sn_food.x && nxt.y==sn_food.y){
         sn_len++;sn_score+=10;
-        if(sn_speed>3) sn_speed--;
+        // Mapa cheio = zerou
+        if(sn_len==SN_MAX){sn_dead=1;goto zerou;}
+        if(!sn_ai_mode && sn_speed>3) sn_speed--;
         sn_place_food();
         sn_draw_board();
         sn_draw_food();
-        sn_grow=1;
     } else {
-        // Apaga cauda
         sn_draw_cell(sn_body[sn_tail].x,sn_body[sn_tail].y,COL_BG);
         sn_tail=(sn_tail+1)%SN_MAX;
-        sn_grow=0;
     }
-
-    // Repinta cabeça anterior como corpo
     sn_draw_cell(head.x,head.y,COL_CYAN);
-    // Nova cabeça
     sn_draw_cell(nxt.x,nxt.y,COL_GREEN);
     return 1;
 
+zerou:;
+    {s32 sx=SN_OX+SN_COLS*SN_CELL+4;
+    static const Char zr[]={CH_Z,CH_E,CH_R,CH_O,CH_U};
+    draw_str(sx-4,SCREEN_H/2-10,zr,5,COL_YELLOW);
+    static const Char ex[]={CH_EXCL};
+    draw_str(sx+12,SCREEN_H/2-10,ex,1,COL_YELLOW);}
+    sn_tick=0;
+    return 1;
+
 dead:;
-    // Pisca vermelho
-    i=sn_tail;
+    {s32 i=sn_tail;
     for(s32 k=0;k<sn_len;k++){
         sn_draw_cell(sn_body[i].x,sn_body[i].y,COL_RED);
         i=(i+1)%SN_MAX;
     }
-    static const Char go[]={CH_G,CH_A,CH_M,CH_E,CH_SP,CH_O,CH_V,CH_E,CH_R};
     s32 sx=SN_OX+SN_COLS*SN_CELL+4;
+    static const Char go[]={CH_G,CH_A,CH_M,CH_E,CH_SP,CH_O,CH_V,CH_E,CH_R};
     draw_str(sx-2,SCREEN_H/2-10,go,9,COL_RED);
-    static const Char ra[]={CH_A,CH_COLON,CH_J,CH_O,CH_G};
-    draw_str(sx,SCREEN_H/2+4,ra,5,COL_GRAY);
+    if(!sn_ai_mode){static const Char ra[]={CH_A,CH_COLON,CH_J,CH_O,CH_G};draw_str(sx,SCREEN_H/2+4,ra,5,COL_GRAY);}
+    sn_tick=0;}
     return 1;
 }
 
@@ -663,7 +707,7 @@ static int pg_update(void){
 // =================================================================
 // MENU PRINCIPAL
 // =================================================================
-typedef enum { GAME_MENU, GAME_TT_MODE, GAME_TT, GAME_SN, GAME_PG_MODE, GAME_PG } GameState;
+typedef enum { GAME_MENU, GAME_TT_MODE, GAME_TT, GAME_SN_MODE, GAME_SN, GAME_PG_MODE, GAME_PG } GameState;
 static GameState g_state;
 static s32 menu_sel;
 
@@ -694,26 +738,33 @@ static void draw_main_menu(void) {
     draw_str((SCREEN_W-12*7)/2,SCREEN_H-14,hint,12,COL_DGRAY);
 }
 
-static void draw_mode_menu(s32 is_pong) {
+// type: 0=velha 1=snake 2=pong
+static void draw_mode_menu(s32 type) {
     clear_screen();
     const Char* t; s32 tlen; u16 tc;
-    if(is_pong){
+    if(type==2){
         static const Char tp[]={CH_P,CH_O,CH_N,CH_G};
         t=tp;tlen=4;tc=COL_BLUE;
+    } else if(type==1){
+        static const Char ts[]={CH_S,CH_N,CH_A,CH_K,CH_E};
+        t=ts;tlen=5;tc=COL_GREEN;
     } else {
         static const Char tj[]={CH_J,CH_O,CH_G,CH_O,CH_SP,CH_D,CH_A,CH_SP,CH_V,CH_E,CH_L};
         t=tj;tlen=11;tc=COL_RED;
     }
     draw_titlebar(t,tlen,COL_WHITE,COL_DGRAY);
 
-    static const Char m2p[]={CH_2,CH_SP,CH_J,CH_O,CH_G,CH_A,CH_D,CH_O,CH_R,CH_E,CH_S};
-    static const Char mAI[]={CH_V,CH_S,CH_SP,CH_C,CH_O,CH_M,CH_P,CH_U,CH_T,CH_A,CH_D,CH_O,CH_R};
+    static const Char m2p[]={CH_J,CH_O,CH_G,CH_A,CH_D,CH_O,CH_R};
+    static const Char m2p2[]={CH_2,CH_SP,CH_J,CH_O,CH_G,CH_A,CH_D,CH_O,CH_R,CH_E,CH_S};
+    static const Char mAI[]={CH_C,CH_O,CH_M,CH_P,CH_U,CH_T,CH_A,CH_D,CH_O,CH_R};
 
-    s32 sel = is_pong ? pg_mode : tt_vs_ai;
+    s32 sel = (type==2)?pg_mode:(type==1)?sn_ai_mode:tt_vs_ai;
 
     for(s32 i=0;i<2;i++){
         s32 y=60+i*35;
-        const Char* mt=(i==0)?m2p:mAI; s32 ml=(i==0)?11:13;
+        const Char* mt; s32 ml;
+        if(i==0){ mt=(type==0)?m2p2:m2p; ml=(type==0)?11:7; }
+        else     { mt=mAI; ml=10; }
         fill_rect(20,y-4,200,18,(sel==i)?COL_DGRAY:COL_BG);
         if(sel==i) fill_rect(18,y-4,3,18,tc);
         draw_str((SCREEN_W-ml*7)/2,y,mt,ml,tc);
@@ -730,7 +781,7 @@ int main(void) {
     prev_keys=0; keys_held=0; keys_down=0;
     g_state=GAME_MENU; menu_sel=0;
     tt_score[1]=0; tt_score[2]=0;
-    tt_vs_ai=0; pg_mode=1;
+    tt_vs_ai=0; pg_mode=1; sn_ai_mode=0;
     draw_main_menu();
 
     while(1){
@@ -744,13 +795,13 @@ int main(void) {
             if(keys_down&KEY_DOWN) {menu_sel=(menu_sel+1)%3;draw_main_menu();}
             if(keys_down&KEY_A||keys_down&KEY_START){
                 if(menu_sel==0){g_state=GAME_TT_MODE;tt_vs_ai=0;draw_mode_menu(0);}
-                else if(menu_sel==1){g_state=GAME_SN;sn_init();}
-                else {g_state=GAME_PG_MODE;pg_mode=1;draw_mode_menu(1);}
+                else if(menu_sel==1){g_state=GAME_SN_MODE;sn_ai_mode=0;draw_mode_menu(1);}
+                else {g_state=GAME_PG_MODE;pg_mode=1;draw_mode_menu(2);}
             }
             break;
 
         case GAME_TT_MODE:
-            if(keys_down&KEY_UP||keys_down&KEY_DOWN) {tt_vs_ai=!tt_vs_ai;draw_mode_menu(0);}
+            if(keys_down&KEY_UP||keys_down&KEY_DOWN){tt_vs_ai=!tt_vs_ai;draw_mode_menu(0);}
             if(keys_down&KEY_A||keys_down&KEY_START){
                 g_state=GAME_TT;
                 tt_reset(); fill_rect(0,0,SCREEN_W,SCREEN_H,COL_BG); tt_draw_board();
@@ -762,12 +813,18 @@ int main(void) {
             if(!tt_update()){g_state=GAME_MENU;draw_main_menu();}
             break;
 
+        case GAME_SN_MODE:
+            if(keys_down&KEY_UP||keys_down&KEY_DOWN){sn_ai_mode=!sn_ai_mode;draw_mode_menu(1);}
+            if(keys_down&KEY_A||keys_down&KEY_START){g_state=GAME_SN;sn_init();}
+            if(keys_down&KEY_SELECT||keys_down&KEY_B){g_state=GAME_MENU;draw_main_menu();}
+            break;
+
         case GAME_SN:
             if(!sn_update()){g_state=GAME_MENU;draw_main_menu();}
             break;
 
         case GAME_PG_MODE:
-            if(keys_down&KEY_UP||keys_down&KEY_DOWN) {pg_mode=!pg_mode;draw_mode_menu(1);}
+            if(keys_down&KEY_UP||keys_down&KEY_DOWN){pg_mode=!pg_mode;draw_mode_menu(2);}
             if(keys_down&KEY_A||keys_down&KEY_START){
                 g_state=GAME_PG; pg_init(); pg_draw_field(); pg_draw();
             }

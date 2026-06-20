@@ -7,7 +7,7 @@ OBJCOPY = $(PREFIX)objcopy
 CFLAGS  = -mthumb-interwork -marm -O2 -fno-builtin -nostdlib \
           -march=armv4t -mcpu=arm7tdmi -Wall
 
-LDFLAGS = -T gba.ld -nostdlib -lgcc
+LDFLAGS = -T gba.ld -nostdlib
 
 OBJS = crt0.o src/main.o
 
@@ -20,7 +20,7 @@ src/main.o: src/main.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET).elf: $(OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) -o $@
+	$(CC) $(LDFLAGS) $(OBJS) -lgcc -o $@
 
 $(TARGET).gba: $(TARGET).elf
 	$(OBJCOPY) -O binary $< $@
