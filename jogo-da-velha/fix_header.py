@@ -35,9 +35,9 @@ def fix(path):
     rom[0xB0:0xB2] = b'LZ'
 
     # Fixed values
-    rom[0xB3] = 0x96  # fixed
-    rom[0xB4] = 0x00  # unit code
-    rom[0xB5] = 0x00  # device type
+    rom[0xB2] = 0x96  # fixed (obrigatório pelo hardware GBA)
+    rom[0xB3] = 0x00  # unit code
+    rom[0xB4] = 0x00  # device type
     rom[0xBC] = 0x00  # version
 
     # Checksum (header complement, bytes 0xA0-0xBC)
