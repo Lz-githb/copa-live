@@ -492,11 +492,17 @@ static void sn_draw_board(void) {
 
 static void sn_init(void) {
     sn_len=4; sn_head=3; sn_tail=0;
-    for(s32 i=0;i<4;i++){sn_body[i].x=SN_COLS/2-2+i;sn_body[i].y=SN_ROWS/2;}
-    sn_dir.x=1;sn_dir.y=0;
+    if(sn_ai_mode){
+        // Começa no início do ciclo hamiltoniano: (3,0)(2,0)(1,0)(0,0) indo para direita
+        sn_build_hamilton();
+        for(s32 i=0;i<4;i++){sn_body[i].x=i;sn_body[i].y=0;}
+        sn_dir.x=sn_ham_dx[0][3]; sn_dir.y=sn_ham_dy[0][3];
+    } else {
+        for(s32 i=0;i<4;i++){sn_body[i].x=SN_COLS/2-2+i;sn_body[i].y=SN_ROWS/2;}
+        sn_dir.x=1;sn_dir.y=0;
+    }
     sn_next_dir=sn_dir;
     sn_score=0; sn_speed=sn_ai_mode?1:8; sn_tick=0; sn_dead=0;
-    if(sn_ai_mode) sn_build_hamilton();
     sn_place_food();
     fill_rect(SN_OX,SN_OY,SN_COLS*SN_CELL,SN_ROWS*SN_CELL,COL_BG);
     sn_draw_board();
