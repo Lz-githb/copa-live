@@ -421,13 +421,59 @@ static s32   sn_speed, sn_tick;
 static s32   sn_dead;
 static s32   sn_ai_mode;  // 0=jogador 1=computador
 
-// Ciclo hamiltoniano: direção a seguir em cada célula
-// Construído via espiral retangular — cobre 100% do mapa, nunca trava
-static s8 sn_ham_dx[SN_ROWS][SN_COLS];
-static s8 sn_ham_dy[SN_ROWS][SN_COLS];
-// Buffer estático para evitar stack overflow (522 posições * 2)
+// Ciclo hamiltoniano (fallback quando BFS não acha caminho seguro)
+static s8  sn_ham_dx[SN_ROWS][SN_COLS];
+static s8  sn_ham_dy[SN_ROWS][SN_COLS];
 static s16 sn_ham_px[SN_MAX];
 static s16 sn_ham_py[SN_MAX];
+
+// BFS para ir direto à fruta
+static u8  sn_bfs_occ[SN_ROWS][SN_COLS]; // grade de ocupação
+static s8  sn_bfs_from[SN_ROWS][SN_COLS]; // direção de onde viemos (-1=não visitado)
+static s16 sn_bfs_qx[SN_MAX], sn_bfs_qy[SN_MAX]; // fila
+
+static const s8 SN_DX[4]={1,0,-1,0};
+static const s8 SN_DY[4]={0,1,0,-1};
+
+// Retorna índice de direção (0=D 1=B 2=E 3=C) do head até (tx,ty)
+// -1 se não há caminho
+static s32 sn_bfs(s16 hx,s16 hy,s16 tx,s16 ty){
+    // Monta grade de ocupação
+    for(s32 r=0;r<SN_ROWS;r++) for(s32 c=0;c<SN_COLS;c++) sn_bfs_occ[r][c]=0;
+    s32 bi=sn_tail;
+    for(s32 k=0;k<sn_len;k++){
+        sn_bfs_occ[sn_body[bi].y][sn_body[bi].x]=1;
+        bi=(bi+1)%SN_MAX;
+    }
+    sn_bfs_occ[hy][hx]=0; // cabeça é ponto de partida, não bloqueio
+
+    for(s32 r=0;r<SN_ROWS;r++) for(s32 c=0;c<SN_COLS;c++) sn_bfs_from[r][c]=-1;
+    s32 qh=0,qt=0;
+    sn_bfs_from[hy][hx]=4; // marcador de início
+    sn_bfs_qx[qt]=hx; sn_bfs_qy[qt]=hy; qt++;
+
+    while(qh<qt){
+        s16 cx=sn_bfs_qx[qh], cy=sn_bfs_qy[qh]; qh++;
+        if(cx==tx && cy==ty) break;
+        for(s32 d=0;d<4;d++){
+            s16 nx=cx+SN_DX[d], ny=cy+SN_DY[d];
+            if((u32)nx>=(u32)SN_COLS||(u32)ny>=(u32)SN_ROWS) continue;
+            if(sn_bfs_occ[ny][nx]||sn_bfs_from[ny][nx]>=0) continue;
+            sn_bfs_from[ny][nx]=(s8)d;
+            sn_bfs_qx[qt]=nx; sn_bfs_qy[qt]=ny; qt++;
+        }
+    }
+    if(sn_bfs_from[ty][tx]<0) return -1;
+
+    // Traça caminho de volta para achar o primeiro passo
+    s16 cx=tx, cy=ty;
+    for(;;){
+        s32 d=sn_bfs_from[cy][cx];
+        s16 px=cx-SN_DX[d], py=cy-SN_DY[d];
+        if(px==hx && py==hy) return d;
+        cx=px; cy=py;
+    }
+}
 
 static void sn_build_hamilton(void) {
     // Percorre o mapa em espiral e salva a sequência de posições
@@ -493,10 +539,10 @@ static void sn_draw_board(void) {
 static void sn_init(void) {
     sn_len=4; sn_head=3; sn_tail=0;
     if(sn_ai_mode){
-        // Começa no início do ciclo hamiltoniano: (3,0)(2,0)(1,0)(0,0) indo para direita
+        // Começa na linha 1 (evita colisão com borda do título) indo para direita
         sn_build_hamilton();
-        for(s32 i=0;i<4;i++){sn_body[i].x=i;sn_body[i].y=0;}
-        sn_dir.x=sn_ham_dx[0][3]; sn_dir.y=sn_ham_dy[0][3];
+        for(s32 i=0;i<4;i++){sn_body[i].x=i;sn_body[i].y=1;}
+        sn_dir.x=1; sn_dir.y=0;
     } else {
         for(s32 i=0;i<4;i++){sn_body[i].x=SN_COLS/2-2+i;sn_body[i].y=SN_ROWS/2;}
         sn_dir.x=1;sn_dir.y=0;
@@ -539,11 +585,18 @@ static int sn_update(void) {
     if(sn_tick < sn_speed) return 1;
     sn_tick=0;
 
-    // Direção: IA segue ciclo hamiltoniano, jogador usa D-pad
+    // Direção: IA usa BFS até a fruta, fallback hamiltoniano se preso
     if(sn_ai_mode){
         Vec2 h=sn_body[sn_head];
-        sn_dir.x=sn_ham_dx[h.y][h.x];
-        sn_dir.y=sn_ham_dy[h.y][h.x];
+        s32 d=sn_bfs(h.x,h.y,sn_food.x,sn_food.y);
+        if(d>=0){
+            sn_dir.x=SN_DX[d];
+            sn_dir.y=SN_DY[d];
+        } else {
+            // Sem caminho livre até a fruta: segue hamiltoniano para não morrer
+            sn_dir.x=sn_ham_dx[h.y][h.x];
+            sn_dir.y=sn_ham_dy[h.y][h.x];
+        }
     } else {
         if((keys_down|keys_held)&KEY_UP    && sn_dir.y==0){sn_next_dir.x=0;sn_next_dir.y=-1;}
         if((keys_down|keys_held)&KEY_DOWN  && sn_dir.y==0){sn_next_dir.x=0;sn_next_dir.y= 1;}
