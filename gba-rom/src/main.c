@@ -1664,8 +1664,6 @@ int main(void) {
 
     while (1) {
         vsync();
-        key_pressed(); // update _prev_keys
-
         if (current_game < 0) {
             menu_update();
             menu_draw();
