@@ -73,7 +73,11 @@ static u32 rng(void) {
     rng_state = rng_state * 1664525u + 1013904223u;
     return rng_state;
 }
-static s32 rng_range(s32 lo, s32 hi) { return lo + (s32)(rng() % (u32)(hi - lo)); }
+// A cada frame de menu mistura VCOUNT no estado — garante semente diferente a cada run
+static void rng_stir(void) {
+    rng_state ^= (u32)REG_VCOUNT * 2654435761u;
+    rng_state += 0x9E3779B9u;
+}
 
 // ===== Desenho =====
 static void put_pixel(s32 x, s32 y, u16 c) {
@@ -850,6 +854,7 @@ int main(void) {
         switch(g_state){
 
         case GAME_MENU:
+            rng_stir(); // mistura entropia em cada frame de menu
             if(keys_down&KEY_UP)   {menu_sel=(menu_sel+2)%3;draw_main_menu();}
             if(keys_down&KEY_DOWN) {menu_sel=(menu_sel+1)%3;draw_main_menu();}
             if(keys_down&KEY_A||keys_down&KEY_START){
