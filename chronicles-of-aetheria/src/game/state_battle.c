@@ -1,44 +1,18 @@
 #include "../../include/game/game_states.h"
+#include "../../include/game/battle/battle.h"
 
-/* =========================================================
- * Battle State (Turn-Based RPG)
- *
- * Skeleton for a standard menu-driven battle:
- *   PHASE_PLAYER_SELECT → PHASE_EXECUTE → PHASE_ENEMY → repeat
- * ========================================================= */
+static u8 s_pending_group;
 
-typedef enum {
-    BATTLE_PHASE_ENTER,
-    BATTLE_PHASE_PLAYER_SELECT,
-    BATTLE_PHASE_EXECUTE,
-    BATTLE_PHASE_ENEMY,
-    BATTLE_PHASE_VICTORY,
-    BATTLE_PHASE_DEFEAT,
-} BattlePhase;
+static void _on_battle_start(const Event* evt) {
+    s_pending_group = (u8)evt->param0;
+}
 
-typedef enum {
-    CMD_NONE = 0,
-    CMD_ATTACK,
-    CMD_MAGIC,
-    CMD_ITEM,
-    CMD_FLEE,
-    CMD_COUNT
-} BattleCommand;
-
-static const char* CMD_NAMES[CMD_COUNT] = {
-    "", "ATTACK", "MAGIC", "ITEM", "FLEE"
-};
-
-static struct {
-    BattlePhase phase;
-    u32         enemy_group_id;
-    u8          cursor;            /* menu cursor */
-    u8          anim_timer;
-    BattleCommand selected_cmd;
-} s_battle;
-
-static void _on_start(const Event* evt) {
-    s_battle.enemy_group_id = evt->param0;
+static void _on_battle_end(const Event* evt) {
+    BattleResult res = (BattleResult)evt->param0;
+    if (res == BATTLE_RESULT_LOSE)
+        state_change(STATE_GAMEOVER);
+    else
+        state_pop();
 }
 
 void state_battle_enter(void) {
@@ -49,97 +23,31 @@ void state_battle_enter(void) {
     tile_bg_setup(BG_LAYER_WORLD, 0, 30, 1, 0, BG_SIZE_256x256);
     tile_bg_enable(BG_LAYER_UI,    TRUE);
     tile_bg_enable(BG_LAYER_WORLD, TRUE);
-
-    /* No scrolling in battle */
     tile_bg_scroll(BG_LAYER_UI,    0, 0);
     tile_bg_scroll(BG_LAYER_WORLD, 0, 0);
 
-    s_battle.phase        = BATTLE_PHASE_ENTER;
-    s_battle.cursor       = CMD_ATTACK;
-    s_battle.anim_timer   = 0;
-    s_battle.selected_cmd = CMD_NONE;
+    event_listen(EVT_BATTLE_START, _on_battle_start);
+    event_listen(EVT_BATTLE_END,   _on_battle_end);
 
-    event_listen(EVT_BATTLE_START, _on_start);
+    battle_data_init();
+    battle_begin(s_pending_group);
 }
 
 void state_battle_exit(void) {
-    event_unlisten(EVT_BATTLE_START, _on_start);
+    event_unlisten(EVT_BATTLE_START, _on_battle_start);
+    event_unlisten(EVT_BATTLE_END,   _on_battle_end);
+    battle_end_cleanup();
     tile_bg_enable(BG_LAYER_UI,    FALSE);
     tile_bg_enable(BG_LAYER_WORLD, FALSE);
     sprite_clear_all();
 }
 
 void state_battle_update(void) {
-    s_battle.anim_timer++;
-
-    switch (s_battle.phase) {
-
-    case BATTLE_PHASE_ENTER:
-        /* Brief entry animation (e.g., 30 frames) */
-        if (s_battle.anim_timer >= 30) {
-            s_battle.anim_timer = 0;
-            s_battle.phase = BATTLE_PHASE_PLAYER_SELECT;
-        }
-        break;
-
-    case BATTLE_PHASE_PLAYER_SELECT:
-        /* Navigate command menu */
-        if (key_pressed(KEY_UP)) {
-            if (s_battle.cursor > 1) s_battle.cursor--;
-        }
-        if (key_pressed(KEY_DOWN)) {
-            if (s_battle.cursor < CMD_COUNT - 1) s_battle.cursor++;
-        }
-        if (key_pressed(KEY_A)) {
-            s_battle.selected_cmd = (BattleCommand)s_battle.cursor;
-            s_battle.anim_timer   = 0;
-            s_battle.phase        = BATTLE_PHASE_EXECUTE;
-        }
-        if (key_pressed(KEY_B)) {
-            /* Cancel: go back to cursor default */
-            s_battle.cursor = CMD_ATTACK;
-        }
-        break;
-
-    case BATTLE_PHASE_EXECUTE:
-        if (s_battle.selected_cmd == CMD_FLEE) {
-            event_push(EVT_BATTLE_END, 2 /* FLEE */, 0);
-            state_pop();
-            break;
-        }
-        /* Resolve action (TODO: damage calculation) */
-        if (s_battle.anim_timer >= 40) {
-            s_battle.anim_timer = 0;
-            s_battle.phase = BATTLE_PHASE_ENEMY;
-        }
-        break;
-
-    case BATTLE_PHASE_ENEMY:
-        /* Enemy AI action (TODO) */
-        if (s_battle.anim_timer >= 40) {
-            s_battle.anim_timer = 0;
-            s_battle.phase = BATTLE_PHASE_PLAYER_SELECT;
-        }
-        break;
-
-    case BATTLE_PHASE_VICTORY:
-        if (s_battle.anim_timer >= 90) {
-            event_push(EVT_BATTLE_END, 0 /* WIN */, 0);
-            state_pop();
-        }
-        break;
-
-    case BATTLE_PHASE_DEFEAT:
-        if (s_battle.anim_timer >= 90) {
-            state_change(STATE_GAMEOVER);
-        }
-        break;
-    }
+    battle_update();
 }
 
 void state_battle_render(void) {
-    /* TODO: draw enemies, HP bars, command menu using tiles */
-    (void)CMD_NAMES;
+    battle_render();
 }
 
 const GameState g_state_battle = {

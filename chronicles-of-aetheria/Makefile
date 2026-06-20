@@ -33,9 +33,10 @@ SRCDIR  := src
 INCDIR  := include
 
 # ---- Source Files (auto-discovered) -----------------------
-SRCS_C := $(wildcard $(SRCDIR)/*.c)        \
-           $(wildcard $(SRCDIR)/engine/*.c) \
-           $(wildcard $(SRCDIR)/game/*.c)
+SRCS_C := $(wildcard $(SRCDIR)/*.c)              \
+           $(wildcard $(SRCDIR)/engine/*.c)       \
+           $(wildcard $(SRCDIR)/game/*.c)          \
+           $(wildcard $(SRCDIR)/game/battle/*.c)
 
 OBJS := $(SRCS_C:.c=.o)
 
@@ -47,15 +48,19 @@ OBJS := $(SRCS_C:.c=.o)
 # -fno-strict-aliasing : common GBA pattern of type-punning
 ARCH    := -marm -mthumb-interwork -mcpu=arm7tdmi -mfloat-abi=soft
 
-CFLAGS  := $(ARCH)                    \
-            -Os                       \
-            -Wall                     \
-            -Wextra                   \
-            -fno-strict-aliasing      \
-            -fomit-frame-pointer      \
-            -ffunction-sections       \
-            -fdata-sections           \
-            -I$(INCDIR)               \
+CFLAGS  := $(ARCH)                              \
+            -Os                                 \
+            -Wall                               \
+            -Wextra                             \
+            -fno-strict-aliasing                \
+            -fomit-frame-pointer                \
+            -ffunction-sections                 \
+            -fdata-sections                     \
+            -I$(INCDIR)                         \
+            -I$(INCDIR)/gba                     \
+            -I$(INCDIR)/engine                  \
+            -I$(INCDIR)/game                    \
+            -I$(INCDIR)/game/battle             \
             -I$(DEVKITPRO)/libgba/include
 
 # ---- Linker Flags -----------------------------------------
@@ -100,6 +105,10 @@ $(SRCDIR)/engine/%.o: $(SRCDIR)/engine/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(SRCDIR)/game/%.o: $(SRCDIR)/game/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(SRCDIR)/game/battle/%.o: $(SRCDIR)/game/battle/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
