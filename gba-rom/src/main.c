@@ -225,7 +225,7 @@ static int tt_collide(int piece, int rot, int px, int py) {
         int bx = px + TT_PIECES[piece][rot][i][0];
         int by = py + TT_PIECES[piece][rot][i][1];
         if (bx<0||bx>=TT_COLS||by>=TT_ROWS) return 1;
-        if (by>=0 && tt.board[by][bx]) return 1;
+        if (by>=0 && by<TT_ROWS && tt.board[by][bx]) return 1;
     }
     return 0;
 }
@@ -755,7 +755,7 @@ static int bo_update(void) {
         if (bo.lives<=0) { bo.state=1; }
         else {
             bo.ball_x=(SCREEN_W/2)<<8; bo.ball_y=(130)<<8;
-            bo.ball_dx=(2<<8); bo.ball_dy=-(2<<8);
+            bo.ball_dx=(2<<8)+(1<<7); bo.ball_dy=-(2<<8);
         }
     }
 
@@ -866,10 +866,12 @@ static int fl_update(void) {
             fl.score++;
             if (fl.score>fl.hi) fl.hi=fl.score;
         }
-        // collision
-        int px=fl.pipes[i][0], gap=fl.pipes[i][1];
-        if (18>=px-FL_PIPE_W && 22<=px+FL_PIPE_W) {
-            if (by<gap+14 || by>gap+14+FL_GAP) { fl.state=2; return 0; }
+        // collision: bird hitbox x=17..25, y=by-3..by+3
+        int px=fl.pipes[i][0], gap=fl.pipes[i][1]+14;
+        int bird_r=25, bird_l=17;
+        int pipe_l=px-FL_PIPE_W/2+2, pipe_r=px+FL_PIPE_W/2-2;
+        if (bird_r>=pipe_l && bird_l<=pipe_r) {
+            if (by-3<gap || by+3>gap+FL_GAP) { fl.state=2; return 0; }
         }
     }
     return 0;
@@ -973,7 +975,13 @@ static int si_update(void) {
     if (p & KEY_B) return -1;
 
     if (si.state) {
-        if (p & KEY_A) { si.score=0; si_init(); if(si.state==2){si.wave++;si.speed=imax(5,25-si.wave*3);} }
+        if (p & KEY_A) {
+            int was_win=(si.state==2);
+            si.score=0;
+            int saved_wave=si.wave;
+            si_init();
+            if (was_win) { si.wave=saved_wave+1; si.speed=imax(5,25-si.wave*3); }
+        }
         return 0;
     }
 
@@ -1520,7 +1528,7 @@ static int pm_update(void) {
             } else {
                 pm.lives--;
                 if (pm.lives<=0) pm.state=1;
-                else { pm.px=10*PM_TILE; pm.py=12*PM_TILE; pm.pdx=pm.pdy=0; }
+                else { pm.px=4*PM_TILE; pm.py=12*PM_TILE; pm.pdx=pm.pdy=0; }
             }
         }
     }

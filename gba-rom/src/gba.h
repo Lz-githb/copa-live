@@ -94,7 +94,8 @@ static inline void m3_fill(uint16_t col) {
     _dma_fill_src = col | ((uint32_t)col << 16);
     DMA3SAD = (uint32_t)&_dma_fill_src;
     DMA3DAD = (uint32_t)VRAM;
-    DMA3CNT = (SCREEN_W * SCREEN_H / 2) | (0x8580u << 16);
+    // CNT_H: bit15=enable, bit10=32bit, bits8-7=10(src-fixed), bits6-5=00(dst-inc)
+    DMA3CNT = (SCREEN_W * SCREEN_H / 2) | (0x8500u << 16);
     // wait until DMA completes
     while (DMA3CNT & (1u << 31));
 }
