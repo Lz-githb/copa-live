@@ -482,33 +482,61 @@ static s32 sn_bfs_on_occ(s16 hx,s16 hy,s16 tx,s16 ty){
     }
 }
 
-// Escolhe direção segura da IA:
-//   1) BFS à fruta → simula comer → checa se cauda ainda alcançável
-//   2) Senão: BFS para a cauda (mantém espaço)
+// Escolhe direção da IA sempre focada na fruta:
+//   1) Caminho direto BFS + verifica se após comer a cauda ainda é alcançável
+//   2) Se direto não é seguro: avalia as 4 direções possíveis,
+//      escolhe a segura (cauda alcançável) que mais aproxima da fruta
 //   3) Fallback: hamiltoniano
 static s32 sn_ai_dir(void){
-    Vec2 h=sn_body[sn_head];
-    Vec2 tail=sn_body[sn_tail];
+    Vec2 h    = sn_body[sn_head];
+    Vec2 tail = sn_body[sn_tail];
+    // Nova cauda após mover sem comer (cauda avança 1)
+    Vec2 ntail = sn_body[(sn_tail+1)%SN_MAX];
     sn_build_occ();
 
-    // Tenta ir até a fruta
-    s32 d=sn_bfs_on_occ(h.x,h.y,sn_food.x,sn_food.y);
+    // 1) Tenta caminho direto à fruta
+    s32 d = sn_bfs_on_occ(h.x,h.y,sn_food.x,sn_food.y);
     if(d>=0){
-        // Simula comer: cabeça vai para food, corpo cresce (cauda fica)
-        // Modifica occ: old head vira corpo, food vira nova cabeça (livre)
-        sn_bfs_occ[h.y][h.x]=1;          // old head agora é corpo
-        // food já é 0 (não é corpo), vira ponto de partida
-        s32 safe=sn_bfs_on_occ(sn_food.x,sn_food.y,tail.x,tail.y);
-        sn_bfs_occ[h.y][h.x]=0;          // restaura
-        if(safe>=0) return d;             // seguro: vai pela fruta
+        // Simula comer: old head vira corpo, food = nova cabeça, cauda fica
+        sn_bfs_occ[h.y][h.x]=1;
+        s32 safe = sn_bfs_on_occ(sn_food.x,sn_food.y,tail.x,tail.y);
+        sn_bfs_occ[h.y][h.x]=0;
+        if(safe>=0) return d;
     }
 
-    // Não é seguro ir pela fruta: persegue a cauda para manter espaço livre
-    sn_build_occ(); // restaura occ original
-    s32 d2=sn_bfs_on_occ(h.x,h.y,tail.x,tail.y);
-    if(d2>=0) return d2;
+    // 2) Direto não é seguro — avalia cada direção possível
+    //    escolhe a segura mais próxima da fruta (Manhattan)
+    s32 best_dir=-1, best_score=99999;
+    for(s32 dir=0;dir<4;dir++){
+        s16 nx=h.x+SN_DX[dir], ny=h.y+SN_DY[dir];
+        if((u32)nx>=(u32)SN_COLS||(u32)ny>=(u32)SN_ROWS) continue;
+        if(sn_bfs_occ[ny][nx]) continue; // bloqueado
 
-    // Último recurso: hamiltoniano
+        // Simula mover sem comer: old head vira corpo, old tail libera
+        sn_bfs_occ[h.y][h.x]=1;
+        sn_bfs_occ[tail.y][tail.x]=0;
+
+        // Seguro? nova cabeça consegue alcançar nova cauda
+        s32 tail_ok = sn_bfs_on_occ(nx,ny,ntail.x,ntail.y);
+        // Ainda consegue alcançar a fruta?
+        s32 food_ok = (tail_ok>=0) ? sn_bfs_on_occ(nx,ny,sn_food.x,sn_food.y) : -1;
+
+        sn_bfs_occ[h.y][h.x]=0;
+        sn_bfs_occ[tail.y][tail.x]=1;
+
+        if(tail_ok<0) continue; // movimento perigoso, ignora
+
+        // Score: prioriza movimentos que ainda alcançam a fruta,
+        //        desempata por distância Manhattan
+        s32 mdist = (nx>sn_food.x?nx-sn_food.x:sn_food.x-nx)
+                  + (ny>sn_food.y?ny-sn_food.y:sn_food.y-ny);
+        s32 score = (food_ok<0) ? 10000+mdist : mdist;
+
+        if(score<best_score){ best_score=score; best_dir=dir; }
+    }
+    if(best_dir>=0) return best_dir;
+
+    // 3) Fallback: hamiltoniano
     s8 hdx=sn_ham_dx[h.y][h.x], hdy=sn_ham_dy[h.y][h.x];
     for(s32 i=0;i<4;i++) if(SN_DX[i]==hdx&&SN_DY[i]==hdy) return i;
     return 0;
