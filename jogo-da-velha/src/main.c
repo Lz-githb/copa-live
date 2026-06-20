@@ -482,57 +482,55 @@ static s32 sn_bfs_on_occ(s16 hx,s16 hy,s16 tx,s16 ty){
     }
 }
 
-// Escolhe direção da IA sempre focada na fruta:
-//   1) Caminho direto BFS + verifica se após comer a cauda ainda é alcançável
-//   2) Se direto não é seguro: avalia as 4 direções possíveis,
-//      escolhe a segura (cauda alcançável) que mais aproxima da fruta
+// Escolhe direção da IA:
+//   1) BFS direto à fruta — safe check: após comer, ainda alcança cauda?
+//      (cauda é marcada como livre no check porque vai se mover)
+//   2) Se não: avalia as 4 direções, escolhe a segura mais perto da fruta
 //   3) Fallback: hamiltoniano
 static s32 sn_ai_dir(void){
     Vec2 h    = sn_body[sn_head];
     Vec2 tail = sn_body[sn_tail];
-    // Nova cauda após mover sem comer (cauda avança 1)
-    Vec2 ntail = sn_body[(sn_tail+1)%SN_MAX];
     sn_build_occ();
 
-    // 1) Tenta caminho direto à fruta
+    // 1) Caminho direto à fruta
     s32 d = sn_bfs_on_occ(h.x,h.y,sn_food.x,sn_food.y);
     if(d>=0){
-        // Simula comer: old head vira corpo, food = nova cabeça, cauda fica
-        sn_bfs_occ[h.y][h.x]=1;
+        // Simula comer: old head vira corpo
+        // Cauda FICA (cobra cresceu), mas marcamos como livre para o check —
+        // se conseguimos alcançar onde a cauda está, temos espaço para sair.
+        sn_bfs_occ[h.y][h.x]   = 1;  // old head → corpo
+        sn_bfs_occ[tail.y][tail.x] = 0;  // cauda: livre para check
         s32 safe = sn_bfs_on_occ(sn_food.x,sn_food.y,tail.x,tail.y);
-        sn_bfs_occ[h.y][h.x]=0;
+        sn_bfs_occ[h.y][h.x]   = 0;  // restaura
+        sn_bfs_occ[tail.y][tail.x] = 1;
         if(safe>=0) return d;
     }
 
-    // 2) Direto não é seguro — avalia cada direção possível
-    //    escolhe a segura mais próxima da fruta (Manhattan)
+    // 2) Direto bloqueado ou perigoso: testa 4 direções
+    //    Simula mover sem comer (cauda avança, head vira corpo)
+    //    Escolhe a direção segura mais próxima da fruta
     s32 best_dir=-1, best_score=99999;
     for(s32 dir=0;dir<4;dir++){
         s16 nx=h.x+SN_DX[dir], ny=h.y+SN_DY[dir];
         if((u32)nx>=(u32)SN_COLS||(u32)ny>=(u32)SN_ROWS) continue;
-        if(sn_bfs_occ[ny][nx]) continue; // bloqueado
+        if(sn_bfs_occ[ny][nx]) continue;
 
-        // Simula mover sem comer: old head vira corpo, old tail libera
-        sn_bfs_occ[h.y][h.x]=1;
-        sn_bfs_occ[tail.y][tail.x]=0;
+        // Simula mover: old head → corpo, old tail libera
+        sn_bfs_occ[h.y][h.x]   = 1;
+        sn_bfs_occ[tail.y][tail.x] = 0;
 
-        // Seguro? nova cabeça consegue alcançar nova cauda
-        s32 tail_ok = sn_bfs_on_occ(nx,ny,ntail.x,ntail.y);
-        // Ainda consegue alcançar a fruta?
-        s32 food_ok = (tail_ok>=0) ? sn_bfs_on_occ(nx,ny,sn_food.x,sn_food.y) : -1;
+        // Seguro: nova cabeça alcança a cauda (agora livre)?
+        s32 tail_ok = sn_bfs_on_occ(nx,ny,tail.x,tail.y);
 
-        sn_bfs_occ[h.y][h.x]=0;
-        sn_bfs_occ[tail.y][tail.x]=1;
+        sn_bfs_occ[h.y][h.x]   = 0;
+        sn_bfs_occ[tail.y][tail.x] = 1;
 
-        if(tail_ok<0) continue; // movimento perigoso, ignora
+        if(tail_ok<0) continue;
 
-        // Score: prioriza movimentos que ainda alcançam a fruta,
-        //        desempata por distância Manhattan
+        // Manhattan até a fruta — menor = melhor
         s32 mdist = (nx>sn_food.x?nx-sn_food.x:sn_food.x-nx)
                   + (ny>sn_food.y?ny-sn_food.y:sn_food.y-ny);
-        s32 score = (food_ok<0) ? 10000+mdist : mdist;
-
-        if(score<best_score){ best_score=score; best_dir=dir; }
+        if(mdist<best_score){ best_score=mdist; best_dir=dir; }
     }
     if(best_dir>=0) return best_dir;
 
