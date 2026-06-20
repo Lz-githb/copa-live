@@ -1,6 +1,9 @@
 #include "../include/engine/engine.h"
 #include "../include/game/game_states.h"
 
+/* Declared in map_data.c */
+void map_data_init(void);
+
 /* =========================================================
  * Chronicles of Aetheria — Entry Point & Engine Core
  *
@@ -99,6 +102,12 @@ int main(void) {
 
     /* Register game content */
     game_register_states();
+
+    /* Initialize world: map table, scripts, texts */
+    map_data_init();
+
+    /* NPC system (no map loaded yet; done in state_overworld_enter) */
+    npc_system_init();
 
     /* Start at title screen */
     state_change(STATE_TITLE);

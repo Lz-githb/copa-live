@@ -2,6 +2,10 @@
 #define GAME_STATES_H
 
 #include "../engine/engine.h"
+#include "world.h"
+#include "npc.h"
+#include "interaction.h"
+#include "time_weather.h"
 
 /* =========================================================
  * Game State Declarations

@@ -33,7 +33,7 @@ SRCDIR  := src
 INCDIR  := include
 
 # ---- Source Files (auto-discovered) -----------------------
-SRCS_C := $(wildcard $(SRCDIR)/*.c) \
+SRCS_C := $(wildcard $(SRCDIR)/*.c)        \
            $(wildcard $(SRCDIR)/engine/*.c) \
            $(wildcard $(SRCDIR)/game/*.c)
 
