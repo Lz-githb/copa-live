@@ -431,36 +431,36 @@ static s8  sn_ham_dy[SN_ROWS][SN_COLS];
 static s16 sn_ham_px[SN_MAX];
 static s16 sn_ham_py[SN_MAX];
 
-// BFS para ir direto à fruta
-static u8  sn_bfs_occ[SN_ROWS][SN_COLS]; // grade de ocupação
-static s8  sn_bfs_from[SN_ROWS][SN_COLS]; // direção de onde viemos (-1=não visitado)
-static s16 sn_bfs_qx[SN_MAX], sn_bfs_qy[SN_MAX]; // fila
+// BFS para IA — grade de ocupação compartilhada entre chamadas
+static u8  sn_bfs_occ[SN_ROWS][SN_COLS];
+static s8  sn_bfs_from[SN_ROWS][SN_COLS];
+static s16 sn_bfs_qx[SN_MAX], sn_bfs_qy[SN_MAX];
 
 static const s8 SN_DX[4]={1,0,-1,0};
 static const s8 SN_DY[4]={0,1,0,-1};
 
-// Retorna índice de direção (0=D 1=B 2=E 3=C) do head até (tx,ty)
-// -1 se não há caminho
-static s32 sn_bfs(s16 hx,s16 hy,s16 tx,s16 ty){
-    // Monta grade de ocupação
+// Monta occ com o corpo atual (cabeça = livre pois é ponto de partida)
+static void sn_build_occ(void){
     for(s32 r=0;r<SN_ROWS;r++) for(s32 c=0;c<SN_COLS;c++) sn_bfs_occ[r][c]=0;
     s32 bi=sn_tail;
     for(s32 k=0;k<sn_len;k++){
         sn_bfs_occ[sn_body[bi].y][sn_body[bi].x]=1;
         bi=(bi+1)%SN_MAX;
     }
-    sn_bfs_occ[hy][hx]=0; // cabeça é ponto de partida, não bloqueio
+    sn_bfs_occ[sn_body[sn_head].y][sn_body[sn_head].x]=0;
+}
 
+// BFS usando sn_bfs_occ já montado. Retorna dir (0-3) ou -1
+static s32 sn_bfs_on_occ(s16 hx,s16 hy,s16 tx,s16 ty){
     for(s32 r=0;r<SN_ROWS;r++) for(s32 c=0;c<SN_COLS;c++) sn_bfs_from[r][c]=-1;
     s32 qh=0,qt=0;
-    sn_bfs_from[hy][hx]=4; // marcador de início
+    sn_bfs_from[hy][hx]=4;
     sn_bfs_qx[qt]=hx; sn_bfs_qy[qt]=hy; qt++;
-
     while(qh<qt){
-        s16 cx=sn_bfs_qx[qh], cy=sn_bfs_qy[qh]; qh++;
-        if(cx==tx && cy==ty) break;
+        s16 cx=sn_bfs_qx[qh],cy=sn_bfs_qy[qh]; qh++;
+        if(cx==tx&&cy==ty) break;
         for(s32 d=0;d<4;d++){
-            s16 nx=cx+SN_DX[d], ny=cy+SN_DY[d];
+            s16 nx=cx+SN_DX[d],ny=cy+SN_DY[d];
             if((u32)nx>=(u32)SN_COLS||(u32)ny>=(u32)SN_ROWS) continue;
             if(sn_bfs_occ[ny][nx]||sn_bfs_from[ny][nx]>=0) continue;
             sn_bfs_from[ny][nx]=(s8)d;
@@ -468,15 +468,45 @@ static s32 sn_bfs(s16 hx,s16 hy,s16 tx,s16 ty){
         }
     }
     if(sn_bfs_from[ty][tx]<0) return -1;
-
-    // Traça caminho de volta para achar o primeiro passo
-    s16 cx=tx, cy=ty;
+    s16 cx=tx,cy=ty;
     for(;;){
         s32 d=sn_bfs_from[cy][cx];
-        s16 px=cx-SN_DX[d], py=cy-SN_DY[d];
-        if(px==hx && py==hy) return d;
+        s16 px=cx-SN_DX[d],py=cy-SN_DY[d];
+        if(px==hx&&py==hy) return d;
         cx=px; cy=py;
     }
+}
+
+// Escolhe direção segura da IA:
+//   1) BFS à fruta → simula comer → checa se cauda ainda alcançável
+//   2) Senão: BFS para a cauda (mantém espaço)
+//   3) Fallback: hamiltoniano
+static s32 sn_ai_dir(void){
+    Vec2 h=sn_body[sn_head];
+    Vec2 tail=sn_body[sn_tail];
+    sn_build_occ();
+
+    // Tenta ir até a fruta
+    s32 d=sn_bfs_on_occ(h.x,h.y,sn_food.x,sn_food.y);
+    if(d>=0){
+        // Simula comer: cabeça vai para food, corpo cresce (cauda fica)
+        // Modifica occ: old head vira corpo, food vira nova cabeça (livre)
+        sn_bfs_occ[h.y][h.x]=1;          // old head agora é corpo
+        // food já é 0 (não é corpo), vira ponto de partida
+        s32 safe=sn_bfs_on_occ(sn_food.x,sn_food.y,tail.x,tail.y);
+        sn_bfs_occ[h.y][h.x]=0;          // restaura
+        if(safe>=0) return d;             // seguro: vai pela fruta
+    }
+
+    // Não é seguro ir pela fruta: persegue a cauda para manter espaço livre
+    sn_build_occ(); // restaura occ original
+    s32 d2=sn_bfs_on_occ(h.x,h.y,tail.x,tail.y);
+    if(d2>=0) return d2;
+
+    // Último recurso: hamiltoniano
+    s8 hdx=sn_ham_dx[h.y][h.x], hdy=sn_ham_dy[h.y][h.x];
+    for(s32 i=0;i<4;i++) if(SN_DX[i]==hdx&&SN_DY[i]==hdy) return i;
+    return 0;
 }
 
 static void sn_build_hamilton(void) {
@@ -591,16 +621,9 @@ static int sn_update(void) {
 
     // Direção: IA usa BFS até a fruta, fallback hamiltoniano se preso
     if(sn_ai_mode){
-        Vec2 h=sn_body[sn_head];
-        s32 d=sn_bfs(h.x,h.y,sn_food.x,sn_food.y);
-        if(d>=0){
-            sn_dir.x=SN_DX[d];
-            sn_dir.y=SN_DY[d];
-        } else {
-            // Sem caminho livre até a fruta: segue hamiltoniano para não morrer
-            sn_dir.x=sn_ham_dx[h.y][h.x];
-            sn_dir.y=sn_ham_dy[h.y][h.x];
-        }
+        s32 d=sn_ai_dir();
+        sn_dir.x=SN_DX[d];
+        sn_dir.y=SN_DY[d];
     } else {
         if((keys_down|keys_held)&KEY_UP    && sn_dir.y==0){sn_next_dir.x=0;sn_next_dir.y=-1;}
         if((keys_down|keys_held)&KEY_DOWN  && sn_dir.y==0){sn_next_dir.x=0;sn_next_dir.y= 1;}
