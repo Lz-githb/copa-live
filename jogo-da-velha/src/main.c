@@ -293,43 +293,52 @@ static void draw_win_line(void) {
 }
 
 // ========== Área de status (direita da grade) ==========
-#define STATUS_X 195
-#define STATUS_Y  20
+// Grade ocupa x=40..190, status fica em x=195..239
+#define STATUS_X 197
+#define STATUS_Y  30
+
+// Desenha X grande centralizado em (cx,cy)
+static void draw_x_at(int cx, int cy, int half, int thick, u16 color) {
+    draw_line(cx-half, cy-half, cx+half, cy+half, thick, color);
+    draw_line(cx+half, cy-half, cx-half, cy+half, thick, color);
+}
 
 static void draw_status(void) {
-    // Limpa área de status
-    fill_rect(STATUS_X - 5, 0, SCREEN_W - STATUS_X + 5, SCREEN_H, COL_BG);
+    fill_rect(STATUS_X - 2, 0, SCREEN_W - STATUS_X + 2, SCREEN_H, COL_BG);
+
+    int sx = STATUS_X + (SCREEN_W - STATUS_X) / 2; // centro horizontal do painel
 
     if (winner == 0) {
-        // "VEZ"
+        // "VEZ" centralizado
         static const Char vez[] = {CH_V,CH_E,CH_Z};
-        draw_str(STATUS_X, STATUS_Y, vez, 3, COL_WHITE);
-        // X ou O
+        draw_str(sx - 10, STATUS_Y, vez, 3, COL_WHITE);
+        // Símbolo do jogador atual grande
         if (current_player == 1)
-            draw_x(0, 0, COL_X); // desenha direto na área de status
-        // Vou usar draw_char direto:
-        if (current_player == 1)
-            draw_char(STATUS_X + 4, STATUS_Y + 12, CH_X, COL_X);
+            draw_x_at(sx, STATUS_Y + 28, 12, 4, COL_X);
         else
-            draw_char(STATUS_X + 4, STATUS_Y + 12, CH_O, COL_O);
+            draw_circle(sx, STATUS_Y + 28, 12, 4, COL_O);
     } else if (winner == 3) {
-        // "EMPATE"
-        static const Char emp[] = {CH_E,CH_M,CH_SP,CH_P,CH_A,CH_T,CH_E};
-        draw_str(STATUS_X - 15, STATUS_Y + 20, emp, 7, COL_DRAW);
+        static const Char emp1[] = {CH_E,CH_M};
+        static const Char emp2[] = {CH_P,CH_A,CH_T,CH_E};
+        draw_str(sx - 6,  STATUS_Y + 15, emp1, 2, COL_DRAW);
+        draw_str(sx - 13, STATUS_Y + 26, emp2, 4, COL_DRAW);
     } else {
-        // "VENCEU"
-        static const Char ven[] = {CH_V,CH_E,CH_N,CH_C,CH_E,CH_U};
         u16 wc = (winner == 1) ? COL_X : COL_O;
-        Char p = (winner == 1) ? CH_X : CH_O;
-        draw_char(STATUS_X, STATUS_Y + 6, p, wc);
-        draw_str(STATUS_X - 7, STATUS_Y + 18, ven, 6, wc);
+        static const Char ven1[] = {CH_V,CH_E,CH_N};
+        static const Char ven2[] = {CH_C,CH_E,CH_U};
+        draw_str(sx - 10, STATUS_Y + 10, ven1, 3, wc);
+        draw_str(sx - 10, STATUS_Y + 21, ven2, 3, wc);
+        if (winner == 1)
+            draw_x_at(sx, STATUS_Y + 46, 10, 3, wc);
+        else
+            draw_circle(sx, STATUS_Y + 46, 10, 3, wc);
     }
 
-    // Instrução na base
-    static const Char press_a[]  = {CH_A,CH_SP,CH_J,CH_O,CH_G,CH_A,CH_R};
-    static const Char press_st[] = {CH_S,CH_T,CH_A,CH_R,CH_T};
-    draw_str(4, SCREEN_H - 20, press_a, 7, COL_WHITE);
-    draw_str(4, SCREEN_H - 10, press_st, 5, COL_WHITE);
+    // Instruções na base
+    static const Char ia[]  = {CH_A,CH_SP,CH_J,CH_O,CH_G,CH_A,CH_R};
+    static const Char ist[] = {CH_S,CH_T,CH_A,CH_R,CH_T};
+    draw_str(STATUS_X - 2, SCREEN_H - 24, ia,  7, COL_GRID);
+    draw_str(STATUS_X + 3, SCREEN_H - 13, ist, 5, COL_GRID);
 }
 
 // ========== Redesenha tudo ==========
@@ -357,21 +366,31 @@ static void draw_all(void) {
 // ========== Título ==========
 static void draw_title(void) {
     clear_screen();
-    // "JOGO DA VEL"
+
+    // X decorativo à esquerda
+    draw_x_at(40, 70, 22, 5, COL_X);
+    // O decorativo à direita
+    draw_circle(200, 70, 22, 5, COL_O);
+
+    // Texto "JOGO" centralizado
     static const Char t1[] = {CH_J,CH_O,CH_G,CH_O};
     static const Char t2[] = {CH_D,CH_A,CH_SP,CH_V,CH_E,CH_L};
     static const Char press[] = {CH_S,CH_T,CH_A,CH_R,CH_T};
-    draw_str(60, 50, t1, 4, COL_X);
-    draw_str(32, 65, t2, 6, COL_O);
-    draw_str(72, 100, press, 5, COL_WHITE);
 
-    // Desenha X e O decorativos
-    draw_x(0, 0, COL_X); // vai aparecer na grade mas ok - vou posicionar manual
-    // X decorativo
-    draw_line(20, 30, 36, 46, 4, COL_X);
-    draw_line(36, 30, 20, 46, 4, COL_X);
-    // O decorativo
-    draw_circle(204, 38, 14, 4, COL_O);
+    // Centro = 120. "JOGO" = 4 chars * 7px = 28px -> x = 120 - 14 = 106
+    draw_str(106, 52, t1, 4, COL_X);
+    // "DA VEL" = 6 chars * 7px = 42px -> x = 120 - 21 = 99
+    draw_str(99, 66, t2, 6, COL_O);
+
+    // Linha separadora
+    fill_rect(60, 82, 120, 2, COL_GRID);
+
+    // "START" = 5 * 7 = 35px -> x = 120 - 17 = 103
+    draw_str(103, 100, press, 5, COL_WHITE);
+
+    // Instrução SELECT
+    static const Char sel[] = {CH_P,CH_R,CH_E,CH_S,CH_S};
+    draw_str(96, 115, sel, 5, COL_GRID);
 }
 
 // ========== Main ==========
