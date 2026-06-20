@@ -69,14 +69,19 @@ void* memset(void* s, int c, unsigned n) {
 
 // ===== RNG (LCG) =====
 static u32 rng_state = 0xDEADBEEF;
+static u32 frame_count = 0;
+
 static u32 rng(void) {
     rng_state = rng_state * 1664525u + 1013904223u;
     return rng_state;
 }
-// A cada frame de menu mistura VCOUNT no estado — garante semente diferente a cada run
+
+// Chamado ANTES do vsync — VCOUNT ainda varia (0-159), frame_count acumula
 static void rng_stir(void) {
-    rng_state ^= (u32)REG_VCOUNT * 2654435761u;
+    rng_state ^= frame_count * 2654435761u;
+    rng_state ^= (u32)REG_VCOUNT << 8;
     rng_state += 0x9E3779B9u;
+    frame_count++;
 }
 
 // ===== Desenho =====
@@ -871,13 +876,13 @@ int main(void) {
     draw_main_menu();
 
     while(1){
+        rng_stir();  // antes do vsync: VCOUNT ainda está no meio do frame
         vsync();
         update_keys();
 
         switch(g_state){
 
         case GAME_MENU:
-            rng_stir(); // mistura entropia em cada frame de menu
             if(keys_down&KEY_UP)   {menu_sel=(menu_sel+2)%3;draw_main_menu();}
             if(keys_down&KEY_DOWN) {menu_sel=(menu_sel+1)%3;draw_main_menu();}
             if(keys_down&KEY_A||keys_down&KEY_START){
