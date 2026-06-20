@@ -500,6 +500,17 @@ static const int TTT_WINS[8][3] = {
     {0,4,8},{2,4,6}          // diagonals
 };
 
+// check win without touching winner_line
+static int ttt_has_win(int player) {
+    for (int i=0;i<8;i++) {
+        if (ttt.board[TTT_WINS[i][0]]==player &&
+            ttt.board[TTT_WINS[i][1]]==player &&
+            ttt.board[TTT_WINS[i][2]]==player) return 1;
+    }
+    return 0;
+}
+
+// check win AND record winning line for display
 static int ttt_check_win(int player) {
     for (int i=0;i<8;i++) {
         if (ttt.board[TTT_WINS[i][0]]==player &&
@@ -515,8 +526,8 @@ static int ttt_check_win(int player) {
 }
 
 static int ttt_minimax(int *board, int depth, int is_max) {
-    if (ttt_check_win(1)) return -10+depth;
-    if (ttt_check_win(2)) return  10-depth;
+    if (ttt_has_win(1)) return -10+depth;
+    if (ttt_has_win(2)) return  10-depth;
     int has_empty=0;
     for (int i=0;i<9;i++) if (!board[i]) { has_empty=1; break; }
     if (!has_empty) return 0;
@@ -625,27 +636,17 @@ static void ttt_draw(void) {
                 m3_pixel(cx-12+d, cy+13-d, C_YELLOW);
             }
         } else if (ttt.board[i]==2) {
-            // O - circle
+            // O - thick circle using midpoint algorithm
             int r=14;
-            for (int angle=0; angle<64; angle++) {
-                // rough circle using sin/cos approximation
-                int a = angle*4; // 0..252 -> degrees/1.4
-                // Use quarter symmetry
-                int qx = (a<16) ? a : (a<32) ? 31-a : (a<48) ? a-32 : 63-a;
-                int qy = (a<16) ? 15-a : (a<32) ? a-16 : (a<48) ? 47-a : a-48;
-                // Normalize to circle
-                // Instead just draw 4 mirrored pixels using simple approach
-                (void)qx;(void)qy;
-                // Actually let's just draw using thick border
-                for (int t=0;t<4;t++) {
-                    static const int dx4[4]={1,0,-1,0}, dy4[4]={0,1,0,-1};
-                    int px2=cx+dx4[t]*r, py2=cy+dy4[t]*r;
-                    m3_rect(px2-1,py2-1,3,3,C_RED);
+            uint16_t oc = C_RED;
+            // draw filled outer circle then hollow with bg color
+            for (int dy2=-r; dy2<=r; dy2++) {
+                for (int dx2=-r; dx2<=r; dx2++) {
+                    int d=dx2*dx2+dy2*dy2;
+                    if (d<=(r*r) && d>=(r-4)*(r-4))
+                        m3_pixel(cx+dx2, cy+dy2, oc);
                 }
             }
-            // Simple thick circle via rect subtraction
-            m3_rect(cx-r, cy-r, r*2, r*2, C_RED);
-            m3_rect(cx-r+3, cy-r+3, r*2-6, r*2-6, RGB15(2,2,6));
         }
     }
 
@@ -1450,7 +1451,7 @@ static void pm_ghost_move(int g) {
 
 static void pm_init(void) {
     for (int r=0;r<PM_ROWS;r++) for (int c=0;c<PM_COLS;c++) pm.board[r][c]=PM_MAP[r][c];
-    pm.px=PM_TILE*10; pm.py=PM_TILE*12;
+    pm.px=PM_TILE*4; pm.py=PM_TILE*12;  // row12 col4 = dot tile, safe spawn
     pm.pdx=0; pm.pdy=0; pm.pnx=0; pm.pny=0;
     pm.panim=0; pm.ghost_scared=0; pm.timer=0;
     // ghosts start positions
@@ -1584,12 +1585,19 @@ static int menu_scroll = 0;
 static int menu_anim = 0;
 
 static void menu_draw(void) {
-    // animated bg
     menu_anim++;
-    for (int y=0;y<SCREEN_H;y++) for (int x=0;x<SCREEN_W;x+=4) {
-        int v = ((x^y)^(menu_anim/8)) & 0xF;
-        m3_pixel(x,y, RGB15(0,0,v/2));
+    // static starfield bg (fast — no per-pixel loop)
+    m3_fill(C_BLACK);
+    // draw some static stars using deterministic positions
+    for (int i = 0; i < 48; i++) {
+        int sx = (i * 53 + 7)  % SCREEN_W;
+        int sy = (i * 37 + 11) % SCREEN_H;
+        uint16_t sc = (i % 3 == 0) ? C_WHITE : (i % 3 == 1) ? C_GRAY : C_DGRAY;
+        m3_pixel(sx, sy, sc);
     }
+    // slow twinkling: flip a few stars each 30 frames
+    int twinkle = (menu_anim / 30) % 16;
+    m3_pixel((twinkle * 67 + 3) % SCREEN_W, (twinkle * 43 + 5) % SCREEN_H, C_YELLOW);
 
     // title box
     draw_panel(10, 8, 220, 22, C_NAVY, C_YELLOW);

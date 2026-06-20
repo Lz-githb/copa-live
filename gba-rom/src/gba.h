@@ -3,6 +3,10 @@
 
 // --- Memory mapped registers ---
 #define REG_DISPCNT   (*(volatile uint16_t*)0x04000000)
+// DMA channel 3 (general purpose)
+#define DMA3SAD       (*(volatile uint32_t*)0x040000D4)
+#define DMA3DAD       (*(volatile uint32_t*)0x040000D8)
+#define DMA3CNT       (*(volatile uint32_t*)0x040000DC)
 #define REG_DISPSTAT  (*(volatile uint16_t*)0x04000004)
 #define REG_VCOUNT    (*(volatile uint16_t*)0x04000006)
 #define REG_BG0CNT    (*(volatile uint16_t*)0x04000008)
@@ -83,10 +87,16 @@ static inline void m3_pixel(int x, int y, uint16_t col) {
         VRAM[y * SCREEN_W + x] = col;
 }
 
+// DMA fill — fastest possible VRAM clear (32-bit, fixed src, immediate)
+// CNT_H = 0x8580: enable | 32bit | src-fixed | dest-inc | immediate
+static volatile uint32_t _dma_fill_src;
 static inline void m3_fill(uint16_t col) {
-    uint32_t c32 = col | ((uint32_t)col << 16);
-    uint32_t *p = (uint32_t*)VRAM;
-    for (int i = 0; i < (SCREEN_W * SCREEN_H / 2); i++) p[i] = c32;
+    _dma_fill_src = col | ((uint32_t)col << 16);
+    DMA3SAD = (uint32_t)&_dma_fill_src;
+    DMA3DAD = (uint32_t)VRAM;
+    DMA3CNT = (SCREEN_W * SCREEN_H / 2) | (0x8580u << 16);
+    // wait until DMA completes
+    while (DMA3CNT & (1u << 31));
 }
 
 static inline void m3_rect(int x, int y, int w, int h, uint16_t col) {
