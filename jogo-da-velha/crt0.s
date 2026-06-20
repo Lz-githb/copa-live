@@ -4,9 +4,9 @@
 .arm
 
 _start:
-    @ Cabeçalho GBA (obrigatório)
-    b       _gba_start          @ branch para código
-    .fill   156, 1, 0           @ logo e campos do cabeçalho (preenchidos depois)
+    @ Cabeçalho GBA: branch + 188 bytes de header (total 192 bytes até 0xC0)
+    b       _gba_start
+    .fill   188, 1, 0           @ logo (0x04-0x9F) + título/códigos/checksum (0xA0-0xBF)
 
 _gba_start:
     @ Inicializa stack no topo da IWRAM
