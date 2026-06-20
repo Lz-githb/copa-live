@@ -49,6 +49,14 @@ typedef enum {
     EVT_BGM_STOP,
     EVT_SFX_PLAY,        /* param0 = sfx_id */
 
+    /* Character */
+    EVT_LEVEL_UP,        /* param0 = party_slot, param1 = new_level */
+    EVT_ITEM_USED,       /* param0 = item_id, param1 = target_slot */
+
+    /* Shop / Inventory */
+    EVT_SHOP_BUY,        /* param0 = item_id, param1 = qty */
+    EVT_SHOP_SELL,       /* param0 = item_id, param1 = qty */
+
     EVT_COUNT
 } EventID;
 

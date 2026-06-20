@@ -75,10 +75,10 @@ void character_recompute(Character* ch)
 
     /* Add equipment attribute bonuses on top */
     {
-        s16 attr_eq[ATTR_COUNT];
+        s8 attr_eq[ATTR_COUNT];
         equip_compute_attr_bonus(ch, attr_eq);
         for (i = 0; i < ATTR_COUNT; i++)
-            ch->base.bonus[i] += attr_eq[i];
+            ch->base.bonus[i] += (s16)attr_eq[i];
     }
 
     stats_compute_derived(&ch->base, &ch->derived, ch->cls,
