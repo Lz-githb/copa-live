@@ -47,6 +47,13 @@ void state_gameover_exit(void);
 void state_gameover_update(void);
 void state_gameover_render(void);
 
+/* Dialogue */
+extern const GameState g_state_dialogue;
+void state_dialogue_enter(void);
+void state_dialogue_exit(void);
+void state_dialogue_update(void);
+void state_dialogue_render(void);
+
 /* Register all game states with the state machine */
 void game_register_states(void);
 

@@ -10,4 +10,5 @@ void game_register_states(void) {
     state_register(&g_state_battle);
     state_register(&g_state_menu);
     state_register(&g_state_gameover);
+    state_register(&g_state_dialogue);
 }
