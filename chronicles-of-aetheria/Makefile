@@ -38,7 +38,8 @@ SRCS_C := $(wildcard $(SRCDIR)/*.c)              \
            $(wildcard $(SRCDIR)/game/*.c)          \
            $(wildcard $(SRCDIR)/game/battle/*.c)  \
            $(wildcard $(SRCDIR)/game/character/*.c) \
-           $(wildcard $(SRCDIR)/game/item/*.c)
+           $(wildcard $(SRCDIR)/game/item/*.c)      \
+           $(wildcard $(SRCDIR)/game/quest/*.c)
 
 OBJS := $(SRCS_C:.c=.o)
 
@@ -65,6 +66,7 @@ CFLAGS  := $(ARCH)                              \
             -I$(INCDIR)/game/battle             \
             -I$(INCDIR)/game/character          \
             -I$(INCDIR)/game/item               \
+            -I$(INCDIR)/game/quest              \
             -I$(DEVKITPRO)/libgba/include
 
 # ---- Linker Flags -----------------------------------------
@@ -121,6 +123,10 @@ $(SRCDIR)/game/character/%.o: $(SRCDIR)/game/character/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(SRCDIR)/game/item/%.o: $(SRCDIR)/game/item/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(SRCDIR)/game/quest/%.o: $(SRCDIR)/game/quest/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
