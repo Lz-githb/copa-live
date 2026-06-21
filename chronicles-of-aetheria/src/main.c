@@ -29,6 +29,7 @@ void map_data_init(void);
 void monster_db_init(void);
 void dialogue_db_init(void);
 void battle_data_init(void);
+void gfx_ui_load(void);
 
 /* ---- Global engine variables ----------------------------- */
 InputState g_input  = {0, 0, 0};
@@ -153,7 +154,8 @@ static void _new_game(void)
     quest_system_init();
     chain_init();
 
-    /* UI */
+    /* UI graphics then menu state */
+    gfx_ui_load();
     menu_init();
 }
 

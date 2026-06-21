@@ -5,6 +5,7 @@
 #include "menu_status.h"
 #include "menu_shop.h"
 #include "menu_save.h"
+#include "menu_crafting.h"
 #include "gba_reg.h"
 #include "gba_types.h"
 #include "tile.h"
@@ -278,7 +279,8 @@ void menu_open(MenuID id)
     case MENU_EQUIPMENT:  menu_equip_open(g_menu.char_idx); break;
     case MENU_QUEST_LOG:  menu_quest_open();              break;
     case MENU_STATUS:     menu_status_open(g_menu.char_idx); break;
-    case MENU_SAVE:       menu_save_open(SAVE_SCREEN_SAVE); break;
+    case MENU_SAVE:       menu_save_open(SAVE_SCREEN_SAVE);  break;
+    case MENU_CRAFTING:   menu_crafting_open();               break;
     default: break;
     }
 }
@@ -332,6 +334,7 @@ void menu_update(void)
     case MENU_STATUS:     menu_status_update();     break;
     case MENU_SHOP:       menu_shop_update();       break;
     case MENU_SAVE:       menu_save_update();       break;
+    case MENU_CRAFTING:   menu_crafting_update();   break;
     default: break;
     }
 
@@ -353,7 +356,7 @@ void menu_render(void)
         if (g_menu.current == MENU_MAIN || g_menu.current == MENU_INVENTORY ||
             g_menu.current == MENU_EQUIPMENT || g_menu.current == MENU_QUEST_LOG ||
             g_menu.current == MENU_STATUS || g_menu.current == MENU_SHOP ||
-            g_menu.current == MENU_SAVE) {
+            g_menu.current == MENU_SAVE   || g_menu.current == MENU_CRAFTING) {
             /* Cursor blink needs periodic redraw */
             if ((g_menu.anim_tick & 7) == 0) g_menu.dirty = TRUE;
         }
@@ -370,6 +373,7 @@ void menu_render(void)
     case MENU_STATUS:     menu_status_render();      break;
     case MENU_SHOP:       menu_shop_render();        break;
     case MENU_SAVE:       menu_save_render();        break;
+    case MENU_CRAFTING:   menu_crafting_render();    break;
     default: break;
     }
 

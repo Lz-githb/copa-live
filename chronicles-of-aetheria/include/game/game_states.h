@@ -40,6 +40,13 @@ void state_menu_exit(void);
 void state_menu_update(void);
 void state_menu_render(void);
 
+/* Game Over */
+extern const GameState g_state_gameover;
+void state_gameover_enter(void);
+void state_gameover_exit(void);
+void state_gameover_update(void);
+void state_gameover_render(void);
+
 /* Register all game states with the state machine */
 void game_register_states(void);
 

@@ -35,6 +35,7 @@ INCDIR  := include
 # ---- Source Files (auto-discovered) -----------------------
 SRCS_C := $(wildcard $(SRCDIR)/*.c)              \
            $(wildcard $(SRCDIR)/engine/*.c)       \
+           $(wildcard $(SRCDIR)/data/*.c)         \
            $(wildcard $(SRCDIR)/game/*.c)          \
            $(wildcard $(SRCDIR)/game/battle/*.c)  \
            $(wildcard $(SRCDIR)/game/character/*.c) \
@@ -70,6 +71,7 @@ CFLAGS  := $(ARCH)                              \
             -I$(INCDIR)/game/quest              \
             -I$(INCDIR)/game/ui                 \
             -I$(INCDIR)/game/dialogue           \
+            -I$(INCDIR)/data                    \
             -I$(DEVKITPRO)/libgba/include
 
 # ---- Linker Flags -----------------------------------------
