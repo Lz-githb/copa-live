@@ -32,6 +32,9 @@ void boss_db_init(void);
 void dialogue_db_init(void);
 void battle_data_init(void);
 void gfx_ui_load(void);
+void gfx_world_load(void);
+void gfx_sprites_load_all(void);
+void polish_init(void);
 
 /* ---- Global engine variables ----------------------------- */
 InputState g_input  = {0, 0, 0};
@@ -156,8 +159,14 @@ static void _new_game(void)
     quest_system_init();
     chain_init();
 
-    /* UI graphics then menu state */
+    /* UI + world graphics */
     gfx_ui_load();
+    gfx_world_load();
+    gfx_sprites_load_all();
+
+    /* Polish effects system */
+    polish_init();
+
     menu_init();
 }
 
@@ -202,6 +211,7 @@ int main(void)
     for (;;) {
         VBlankIntrWait();
         _tick_play_time();
+        polish_update();
         engine_tick();
     }
 
