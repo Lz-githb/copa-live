@@ -152,6 +152,9 @@ typedef struct {
 
 void    world_init(const MapDef** map_table, u8 map_count);
 
+/* Append extra maps to the registry (call after world_init) */
+void    world_add_maps(const MapDef** extra, u8 count);
+
 /* Load a map by ID; player spawns at spawn_id */
 void    world_load_map(u8 map_id, u8 spawn_id);
 

@@ -26,6 +26,7 @@
 
 /* Forward declarations from data modules */
 void map_data_init(void);
+void map_data_ext_init(void);
 void monster_db_init(void);
 void boss_db_init(void);
 void dialogue_db_init(void);
@@ -171,6 +172,7 @@ static void _game_systems_init(void)
     craft_system_init();
     dialogue_db_init();
     map_data_init();
+    map_data_ext_init();
     npc_system_init();
 
     /* Game states */

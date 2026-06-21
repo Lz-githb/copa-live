@@ -6,7 +6,9 @@
  * ========================================================= */
 
 /* ---- Global map registry -------------------------------- */
-const MapDef** g_map_table = NULL;
+#define MAP_REGISTRY_MAX 64
+static const MapDef* s_map_registry[MAP_REGISTRY_MAX];
+const MapDef** g_map_table = s_map_registry;
 u8             g_map_count = 0;
 
 /* ---- Runtime state -------------------------------------- */
@@ -60,12 +62,22 @@ static const MapDef* _get_map(u8 id) {
 /* ---- API ------------------------------------------------ */
 
 void world_init(const MapDef** map_table, u8 map_count) {
-    g_map_table    = map_table;
+    u8 i;
+    if (map_count > MAP_REGISTRY_MAX) map_count = MAP_REGISTRY_MAX;
+    for (i = 0; i < map_count; i++)
+        s_map_registry[i] = map_table[i];
+    g_map_table    = s_map_registry;
     g_map_count    = map_count;
     s_active->def  = NULL;
     s_warp.phase   = WARP_IDLE;
     s_door.active  = FALSE;
     mem_zero(&s_area, sizeof(MapArea));
+}
+
+void world_add_maps(const MapDef** extra, u8 count) {
+    u8 i;
+    for (i = 0; i < count && g_map_count < MAP_REGISTRY_MAX; i++)
+        s_map_registry[g_map_count++] = extra[i];
 }
 
 /* Upload full 32x32 screenblock from map data.
