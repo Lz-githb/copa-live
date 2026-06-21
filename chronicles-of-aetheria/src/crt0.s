@@ -35,6 +35,16 @@ _gba_init:
     msr     cpsr_c, #0xDF
     ldr     sp, =_sp_usr
 
+    @ Copy .data from ROM LMA to EWRAM VMA
+    ldr     r0, =_data_vma
+    ldr     r1, =_data_vma_end
+    ldr     r2, =_data_lma
+_copy_data:
+    cmp     r0, r1
+    ldrlt   r3, [r2], #4
+    strlt   r3, [r0], #4
+    blt     _copy_data
+
     @ Clear BSS
     ldr     r0, =_bss_start
     ldr     r1, =_bss_end
@@ -44,7 +54,7 @@ _clear_bss:
     strlt   r2, [r0], #4
     blt     _clear_bss
 
-    @ Copy IWRAM section from ROM LMA to IWRAM VMA
+    @ Copy IWRAM code section from ROM LMA to IWRAM VMA
     ldr     r0, =_iwram_start
     ldr     r1, =_iwram_end
     ldr     r2, =_data_end      @ LMA of IWRAM in ROM
@@ -53,6 +63,15 @@ _copy_iwram:
     ldrlt   r3, [r2], #4
     strlt   r3, [r0], #4
     blt     _copy_iwram
+
+    @ Zero IWRAM BSS (uninit data in IWRAM, NOT in ROM)
+    ldr     r0, =_iwram_bss_start
+    ldr     r1, =_iwram_bss_end
+    mov     r2, #0
+_clear_iwram_bss:
+    cmp     r0, r1
+    strlt   r2, [r0], #4
+    blt     _clear_iwram_bss
 
     @ Call main()
     bl      main

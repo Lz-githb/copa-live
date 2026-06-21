@@ -11,15 +11,24 @@ MEMORY {
 }
 
 SECTIONS {
-    /* ROM: header + code + rodata + initialized data */
+    /* ROM: header + code + rodata */
     .text 0x08000000 : {
         KEEP(*(.crt0))
         *(.text .text.*)
         *(.rodata .rodata.*)
+        . = ALIGN(4);
+        _text_end = .;
+    } > ROM
+
+    /* EWRAM: initialized data (VMA=EWRAM, LMA=ROM after .text) */
+    .data 0x02000000 : AT(_text_end) {
+        _data_vma = .;
         *(.data .data.*)
         . = ALIGN(4);
-        _data_end = .;
-    } > ROM
+        _data_vma_end = .;
+    } > EWRAM
+    _data_lma  = LOADADDR(.data);
+    _data_size = _data_vma_end - _data_vma;
 
     /* EWRAM: zero-init BSS */
     .bss (NOLOAD) : {
@@ -31,13 +40,21 @@ SECTIONS {
         _bss_end = .;
     } > EWRAM
 
-    /* IWRAM: time-critical code tagged IWRAM_CODE */
-    .iwram 0x03000000 : AT(_data_end) {
+    /* IWRAM: time-critical code (copied from ROM at boot) */
+    .iwram 0x03000000 : AT(_text_end + _data_size) {
         _iwram_start = .;
-        *(.iwram .iwram.*)
-        *(.iwram.bss .iwram.bss.*)
+        *(.iwram)          /* only exact .iwram sections (code), not .iwram.bss */
         . = ALIGN(4);
         _iwram_end = .;
+    } > IWRAM
+    _data_end = _text_end + _data_size;   /* LMA base for IWRAM copy */
+
+    /* IWRAM BSS: uninit data in IWRAM (zeroed at boot, NOT copied from ROM) */
+    .iwram.bss (NOLOAD) : {
+        _iwram_bss_start = .;
+        *(.iwram.bss .iwram.bss.*)
+        . = ALIGN(4);
+        _iwram_bss_end = .;
     } > IWRAM
 
     _sp_irq  = ORIGIN(IWRAM) + LENGTH(IWRAM) - 0x060;

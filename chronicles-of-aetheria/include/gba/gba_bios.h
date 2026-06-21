@@ -8,9 +8,11 @@
  * Call via ARM swi instruction; faster than software impl
  * ========================================================= */
 
-/* VBlank wait — suspends CPU until next VBlank */
+/* VBlank wait — busy-wait (avoids BIOS SWI interaction issues) */
 static inline void VBlankIntrWait(void) {
-    __asm__ volatile ("swi 0x05" ::: "r0", "r1", "r2", "r3");
+    volatile u16* dispstat = (volatile u16*)0x04000004;
+    while (!(*dispstat & 1));
+    while (*dispstat & 1);
 }
 
 /* Halt — suspend CPU until any interrupt */
@@ -59,20 +61,29 @@ static inline s16 ArcTan2(s16 x, s16 y) {
 }
 
 /* ---- Fast memory helpers ---------------------------------- */
-/* Fill 32-bit words; n = number of 32-bit words */
+/* Fill 32-bit words using plain C (safe, no BIOS alignment requirements) */
 INLINE void mem_fill32(void* dst, u32 val, u32 n) {
-    u32 buf[1] = { val };
-    CpuFastSet(buf, dst, CPUFSSET_FILL | n);
+    u32* p = (u32*)dst;
+    while (n--) *p++ = val;
 }
 
-/* Copy 32-bit words; n = number of 32-bit words */
+/* Copy 32-bit words */
 INLINE void mem_copy32(void* dst, const void* src, u32 n) {
-    CpuFastSet(src, dst, CPUFSSET_COPY | n);
+    const u32* s = (const u32*)src;
+    u32*       d = (u32*)dst;
+    while (n--) *d++ = *s++;
 }
 
-/* Zero a region */
+/* Zero a region (handles any size, any alignment) */
 INLINE void mem_zero(void* dst, u32 bytes) {
-    mem_fill32(dst, 0, bytes >> 2);
+    u32  words = bytes >> 2;
+    u32  tail  = bytes & 3;
+    u32* p     = (u32*)dst;
+    while (words--) *p++ = 0;
+    if (tail) {
+        u8* q = (u8*)p;
+        while (tail--) *q++ = 0;
+    }
 }
 
 #endif /* GBA_BIOS_H */

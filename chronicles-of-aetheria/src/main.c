@@ -62,15 +62,17 @@ void IWRAM_CODE engine_vblank(void)
     input_update();           /* snapshot key state */
 }
 
+/* BIOS interrupt acknowledge mirror — VBlankIntrWait reads this */
+#define BIOS_IF  (*(vu16*)0x03FFFFF8)
+
 /* IRQ dispatch (all sources routed here by BIOS) */
 void engine_isr(void)
 {
     u16 fired = REG_IF & REG_IE;
-    if (fired & IRQ_VBLANK) {
+    REG_IF   = fired;   /* acknowledge hardware */
+    BIOS_IF |= fired;   /* acknowledge BIOS IntrWait mirror */
+    if (fired & IRQ_VBLANK)
         engine_vblank();
-        REG_IF = IRQ_VBLANK;
-    }
-    REG_IF = fired;
 }
 
 /* ---- Engine Init ---------------------------------------- */
@@ -173,7 +175,6 @@ static void _new_game(void)
 /* ---- All game systems init (called once from main) ------- */
 static void _game_systems_init(void)
 {
-    /* ROM data tables */
     battle_data_init();
     monster_db_init();
     boss_db_init();
@@ -184,15 +185,12 @@ static void _game_systems_init(void)
     map_data_ext_init();
     npc_system_init();
 
-    /* Game states */
     game_register_states();
 
-    /* Try to load save slot 0 */
     {
         SaveSlot slot;
         if (save_read(0, &slot)) {
             save_apply(&slot);
-            /* Re-register event listeners (not persisted) */
             chain_init();
             menu_init();
         } else {

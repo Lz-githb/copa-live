@@ -65,6 +65,6 @@ void engine_vblank(void) IWRAM_CODE;
 void engine_tick(void);
 
 /* VBlank ISR registered with BIOS */
-void engine_isr(void) __attribute__((interrupt("IRQ")));
+void engine_isr(void);
 
 #endif /* ENGINE_H */
