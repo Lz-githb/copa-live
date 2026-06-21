@@ -178,7 +178,7 @@ static void _game_systems_init(void)
     monster_db_init();
     boss_db_init();
     equip_system_init();
-    craft_system_init();
+    crafting_init();
     dialogue_db_init();
     map_data_init();
     map_data_ext_init();

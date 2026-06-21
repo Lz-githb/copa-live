@@ -14,10 +14,16 @@
 # =============================================================
 
 # ---- Tool Paths -------------------------------------------
+# Supports both devkitPro and system arm-none-eabi toolchain
 DEVKITPRO ?= /opt/devkitpro
 DEVKITARM ?= $(DEVKITPRO)/devkitARM
 
+ifneq ($(wildcard $(DEVKITARM)/bin/arm-none-eabi-gcc),)
 PREFIX  := $(DEVKITARM)/bin/arm-none-eabi-
+else
+PREFIX  := arm-none-eabi-
+endif
+
 CC      := $(PREFIX)gcc
 AS      := $(PREFIX)gcc
 LD      := $(PREFIX)gcc
@@ -43,7 +49,11 @@ SRCS_C := $(wildcard $(SRCDIR)/*.c)              \
            $(wildcard $(SRCDIR)/game/quest/*.c)     \
            $(wildcard $(SRCDIR)/game/ui/*.c)
 
-OBJS := $(SRCS_C:.c=.o)
+CRT0_S  := src/crt0.s
+CRT0_O  := src/crt0.o
+
+OBJS_C := $(SRCS_C:.c=.o)
+OBJS   := $(CRT0_O) $(OBJS_C)
 
 # ---- Compiler Flags ---------------------------------------
 # -marm         : generate ARM (not Thumb) for IWRAM code
@@ -72,24 +82,32 @@ CFLAGS  := $(ARCH)                              \
             -I$(INCDIR)/game/ui                 \
             -I$(INCDIR)/game/dialogue           \
             -I$(INCDIR)/data                    \
-            -I$(DEVKITPRO)/libgba/include
+
 
 # ---- Linker Flags -----------------------------------------
-# gba.ld    : devkitPro linker script placing code at 0x08000000
-# --gc-sections : remove unused code (essential for size)
+# Use local gba.ld when devkitPro is not present
+ifneq ($(wildcard $(DEVKITPRO)/libgba/gba.ld),)
 LDSCRIPT := $(DEVKITPRO)/libgba/gba.ld
+LDLIBS   := -L$(DEVKITPRO)/libgba/lib -lgba
+else
+LDSCRIPT := gba.ld
+LDLIBS   := /usr/lib/gcc/arm-none-eabi/13.2.1/libgcc.a
+endif
 
 LDFLAGS := $(ARCH)                    \
             -T$(LDSCRIPT)             \
             -Wl,--gc-sections         \
             -Wl,-Map,$(TARGET).map    \
-            -nostartfiles             \
-            -L$(DEVKITPRO)/libgba/lib \
-            -lgba
+            -nostdlib
 
 # ---- GBA ROM Header fix -----------------------------------
-# gbafix patches the ROM header checksum so hardware boots it
 GBAFIX  := $(DEVKITPRO)/tools/bin/gbafix
+
+# ---- crt0 assembly ----------------------------------------
+CRT0_S  := src/crt0.s
+CRT0_O  := src/crt0.o
+
+SRCS_S  := $(CRT0_S)
 
 # ---- Build Rules ------------------------------------------
 .PHONY: all clean run
@@ -97,14 +115,17 @@ GBAFIX  := $(DEVKITPRO)/tools/bin/gbafix
 all: $(GBA)
 
 $(GBA): $(ELF)
-	$(OBJCOPY) -O binary $< $@
+	$(OBJCOPY) -O binary -R .bss -R .ewram.bss -R .iwram.bss $< $@
 	@if [ -f "$(GBAFIX)" ]; then $(GBAFIX) $@ -t"Aetheria" -c"CAEGBA" -m96; fi
 	@echo ""
 	@echo "  Built: $@"
 	@ls -lh $@
 
+$(CRT0_O): $(CRT0_S)
+	$(AS) $(ARCH) -c -o $@ $<
+
 $(ELF): $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 # C compilation
 $(SRCDIR)/%.o: $(SRCDIR)/%.c
@@ -141,7 +162,7 @@ $(SRCDIR)/game/ui/%.o: $(SRCDIR)/game/ui/%.c
 
 # ---- Utility ----------------------------------------------
 clean:
-	rm -f $(OBJS) $(ELF) $(GBA) $(TARGET).map
+	rm -f $(OBJS_C) $(CRT0_O) $(ELF) $(GBA) $(TARGET).map
 
 run: $(GBA)
 	mgba-qt $(GBA)

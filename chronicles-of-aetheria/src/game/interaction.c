@@ -9,10 +9,10 @@
 #define FLAG_BYTES 32
 static u8 s_flags[FLAG_BYTES];
 
-const ScriptCmd**   g_script_table = NULL;
-const DialogueText* g_text_table   = NULL;
-static u16          s_script_count = 0;
-static u16          s_text_count   = 0;
+static const ScriptCmd**   s_script_table = NULL;
+static const DialogueText* s_text_table   = NULL;
+static u16                 s_script_count = 0;
+static u16                 s_text_count   = 0;
 
 static ScriptInterp s_interp;
 
@@ -73,7 +73,7 @@ static void _exec_step(void) {
 
     case SCMD_DIALOGUE:
         if (cmd->param0 < s_text_count) {
-            const DialogueText* txt = &g_text_table[cmd->param0];
+            const DialogueText* txt = &s_text_table[cmd->param0];
             (void)txt;
             s_interp.dialogue_text_id = cmd->param0;
             s_interp.dialogue_open    = TRUE;
@@ -180,8 +180,8 @@ static void _exec_step(void) {
 void interact_init(const ScriptCmd** script_table,
                    const DialogueText* text_table,
                    u16 script_count, u16 text_count) {
-    g_script_table = script_table;
-    g_text_table   = text_table;
+    s_script_table = script_table;
+    s_text_table   = text_table;
     s_script_count = script_count;
     s_text_count   = text_count;
     mem_zero(s_flags, sizeof(s_flags));
@@ -189,8 +189,8 @@ void interact_init(const ScriptCmd** script_table,
 }
 
 void interact_run_script(u16 script_id, Npc* npc) {
-    if (!g_script_table || script_id >= s_script_count) return;
-    s_interp.script    = g_script_table[script_id];
+    if (!s_script_table || script_id >= s_script_count) return;
+    s_interp.script    = s_script_table[script_id];
     s_interp.npc       = npc;
     s_interp.pc        = 0;
     s_interp.state     = INTERP_RUNNING;
@@ -277,7 +277,7 @@ void interact_update(void) {
                 s_interp.dialogue_char = DIALOGUE_LINE_LEN;
             } else {
                 /* Next line or close */
-                const DialogueText* txt = &g_text_table[s_interp.dialogue_text_id];
+                const DialogueText* txt = &s_text_table[s_interp.dialogue_text_id];
                 s_interp.dialogue_line++;
                 if (s_interp.dialogue_line >= txt->line_count) {
                     s_interp.dialogue_open = FALSE;
