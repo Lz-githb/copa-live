@@ -27,6 +27,7 @@
 /* Forward declarations from data modules */
 void map_data_init(void);
 void monster_db_init(void);
+void boss_db_init(void);
 void dialogue_db_init(void);
 void battle_data_init(void);
 void gfx_ui_load(void);
@@ -165,6 +166,7 @@ static void _game_systems_init(void)
     /* ROM data tables */
     battle_data_init();
     monster_db_init();
+    boss_db_init();
     equip_system_init();
     craft_system_init();
     dialogue_db_init();
