@@ -1,7 +1,7 @@
 #include "quest_state.h"
 #include "crafting.h"
 #include "item_use.h"
-#include "event_system.h"
+#include "../../engine/event.h"
 #include "gba_types.h"
 
 /* =========================================================

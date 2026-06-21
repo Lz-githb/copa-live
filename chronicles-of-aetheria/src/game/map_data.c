@@ -1,5 +1,10 @@
 #include "../../include/game/world.h"
 #include "../../include/game/interaction.h"
+#include "../../include/game/npc.h"
+#define DIR_DOWN  NPC_DIR_DOWN
+#define DIR_UP    NPC_DIR_UP
+#define DIR_LEFT  NPC_DIR_LEFT
+#define DIR_RIGHT NPC_DIR_RIGHT
 
 /* =========================================================
  * Map Data — ROM-resident map definitions

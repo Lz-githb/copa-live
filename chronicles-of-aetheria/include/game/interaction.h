@@ -111,8 +111,5 @@ BOOL interact_flag_get(u16 flag_id);
 void interact_flag_set(u16 flag_id);
 void interact_flag_clear(u16 flag_id);
 
-/* Script table (ROM pointers, indexed by script_id) */
-extern const ScriptCmd** g_script_table;
-extern const DialogueText* g_text_table;
 
 #endif /* GAME_INTERACTION_H */

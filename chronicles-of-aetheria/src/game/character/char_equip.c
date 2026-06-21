@@ -25,7 +25,7 @@ const EquipDef g_equip_table[EQUIP_COUNT] = {
 [EQUIP_GUARDIAN_BLADE] = { "Lâmina do Guardião","Espada sagrada do proteger",
     ITEM_SWORD, EQUIP_SLOT_WEAPON, 30,
     (1<<CLASS_GUARDIAN), RARITY_RARE,
-    {20,0,38,5,0,5,0,0,0},{0,1,1,0,0,0,0,0},0, EPASSIVE_GUARD_AURA,5, 800,400 },
+    {20,0,38,5,0,5,0,0,0},{0,1,1,0,0,0,0,0},0, EPASSIVE_DEF_AURA,5, 800,400 },
 
 [EQUIP_IRON_GS]      = { "Montante de Ferro","Espada enorme e devastadora",
     ITEM_GREATSWORD, EQUIP_SLOT_WEAPON, 1,

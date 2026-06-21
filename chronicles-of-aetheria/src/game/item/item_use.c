@@ -2,7 +2,7 @@
 #include "inventory.h"
 #include "char_equip.h"
 #include "character.h"
-#include "event_system.h"
+#include "../../engine/event.h"
 #include "gba_types.h"
 
 /* ---- Forward declaration for XP boost flag -------------- */

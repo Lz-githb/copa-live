@@ -60,8 +60,6 @@ static u8 s_shake_intensity;
 /* -----------------------------------------------------------------------
  * Fade state
  * ----------------------------------------------------------------------- */
-typedef enum { FADE_NONE = 0, FADE_OUT, FADE_IN } FadeDir;
-
 static FadeDir  s_fade_dir;
 static u8       s_fade_level;   /* 0 = clear, 16 = full black */
 static u8       s_fade_speed;   /* blend levels to advance per frame */

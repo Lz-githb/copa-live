@@ -13,7 +13,7 @@
 
 #define BATTLER_NAME_LEN  12
 
-typedef struct {
+typedef struct Battler {
     /* Identity */
     char         name[BATTLER_NAME_LEN];
     u8           idx;          /* 0-9 (0-3 allies, 4-9 enemies) */

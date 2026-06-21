@@ -1,3 +1,4 @@
+#include "inventory.h"
 #include "menu_types.h"
 #include "crafting.h"
 #include "item_db.h"
@@ -146,7 +147,7 @@ void menu_crafting_render(void)
 
     /* Gold */
     ui_write_str(20, 1, "G:", PAL_TEXT);
-    ui_write_num(22, 1, (s32)g_gold, PAL_HI);
+    ui_write_num(22, 1, (s32)gold_get(), PAL_HI);
 
     /* Recipe list */
     for (i = 0; i < CRAFT_VISIBLE_ROWS; i++) {

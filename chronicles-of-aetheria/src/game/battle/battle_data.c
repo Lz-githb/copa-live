@@ -2,6 +2,7 @@
 #include "battle_types.h"
 #include "battler.h"
 #include "battle_combo.h"
+#include "battle_anim.h"
 #include "gba_types.h"
 
 /* ---- Skill table ---------------------------------------- */
@@ -57,40 +58,34 @@ const SkillDef g_skill_table[SKILL_COUNT] = {
 };
 
 /* ---- Enemy table ---------------------------------------- */
-static const u8 s_res_norm[7]   = { 100,100,100,100,100,100,100 };
-static const u8 s_res_fire[7]   = { 100, 50,150,100,100,100, 50 };
-static const u8 s_res_water[7]  = { 100,150, 50,100,100,100,100 };
-static const u8 s_res_earth[7]  = { 100,100,100, 50,150,100,100 };
-static const u8 s_res_undead[7] = { 100,150,100,100,100,200, 50 };
-
-static const u8 s_slime_sk[]    = { SKILL_ATTACK };
-static const u8 s_goblin_sk[]   = { SKILL_ATTACK, SKILL_SLASH };
-static const u8 s_wolf_sk[]     = { SKILL_ATTACK, SKILL_BREAK };
-static const u8 s_orc_sk[]      = { SKILL_ATTACK, SKILL_SLASH, SKILL_SHATTER };
-static const u8 s_mage_sk[]     = { SKILL_FIRE, SKILL_WATER, SKILL_SLOW_CAST };
-static const u8 s_dragon_sk[]   = { SKILL_FIRAGA, SKILL_SLASH, SKILL_PETRIFY };
-static const u8 s_undead_sk[]   = { SKILL_ATTACK, SKILL_DRAIN, SKILL_SHADOW };
-static const u8 s_eleF_sk[]     = { SKILL_FIRE, SKILL_FIRA };
-static const u8 s_eleW_sk[]     = { SKILL_WATER, SKILL_AQUA };
-static const u8 s_golem_sk[]    = { SKILL_ATTACK, SKILL_QUAKE, SKILL_SHATTER };
-static const u8 s_dknight_sk[]  = { SKILL_SLASH, SKILL_SHADOW, SKILL_DOOM };
-static const u8 s_serpent_sk[]  = { SKILL_SLASH, SKILL_PETRIFY, SKILL_TIDAL, SKILL_ECLIPSE };
+/* resist[7]: NONE FIRE WATER EARTH AIR LIGHT DARK  (100=normal, 50=weak, 150=resist, 200=absorb) */
+#define RN {100,100,100,100,100,100,100}   /* neutral */
+#define RF {100, 50,150,100,100,100, 50}   /* fire-type */
+#define RW {100,150, 50,100,100,100,100}   /* water-type */
+#define RE {100,100,100, 50,150,100,100}   /* earth-type */
+#define RU {100,150,100,100,100,200, 50}   /* undead */
 
 const EnemyDef g_enemy_table[ENEMY_COUNT] = {
-/*  name         spr pal elem       resist         hp  mp atk def mag mdf spd  ai  exp  gold skills   cnt */
-  { "Slime",      0,  0, ELEM_WATER,{100,150, 50,100,100,100,100}, 30, 0, 12,  8,  4,  4, 10, 0,  10,  5, s_slime_sk,  1 },
-  { "Goblin",     1,  1, ELEM_NONE, s_res_norm,                    55, 0, 20, 14,  6,  6, 18, 0,  18, 10, s_goblin_sk, 2 },
-  { "Wolf",       2,  2, ELEM_NONE, s_res_norm,                    70, 0, 28, 12,  6,  6, 25, 0,  22, 12, s_wolf_sk,   2 },
-  { "Orc",        3,  3, ELEM_EARTH,s_res_earth,                  100, 0, 35, 22, 10, 10, 14, 0,  35, 18, s_orc_sk,    3 },
-  { "Mage",       4,  4, ELEM_FIRE, s_res_fire,                    60,40, 12, 10, 30, 20, 20, 1,  40, 22, s_mage_sk,   3 },
-  { "Dragon",     5,  5, ELEM_FIRE, s_res_fire,                   280,40, 55, 40, 50, 35, 22, 1,  90, 50, s_dragon_sk, 3 },
-  { "Undead",     6,  6, ELEM_DARK, s_res_undead,                  80, 0, 25, 18, 15, 10, 12, 0,  38, 20, s_undead_sk, 3 },
-  { "FireEle",    7,  7, ELEM_FIRE, s_res_fire,                    90,30, 20, 15, 40, 10, 20, 0,  42, 24, s_eleF_sk,   2 },
-  { "WaterEle",   8,  8, ELEM_WATER,s_res_water,                   90,30, 20, 15, 40, 10, 18, 0,  42, 24, s_eleW_sk,   2 },
-  { "Golem",      9,  9, ELEM_EARTH,s_res_earth,                  200, 0, 50, 60,  8, 30,  8, 0,  70, 40, s_golem_sk,  3 },
-  { "DkKnight",  10, 10, ELEM_DARK, s_res_undead,                 180,20, 50, 35, 30, 25, 18, 1,  85, 45, s_dknight_sk,3 },
-  { "Serpent",   11, 11, ELEM_WATER,s_res_water,                  500,80, 60, 50, 60, 45, 20, 2, 200,100, s_serpent_sk,4 },
+/* name        spr pal elem       resist  hp   mp  atk def mag mdf spd ai  exp  gold  skills                              cnt */
+{ "Slime",      0,  0, ELEM_WATER,RW,     30,  0, 12,  8,  4,  4, 10, 0,  10,  5, {SKILL_ATTACK,0,0,0},                  1 },
+{ "Goblin",     1,  1, ELEM_NONE, RN,     55,  0, 20, 14,  6,  6, 18, 0,  18, 10, {SKILL_ATTACK,SKILL_SLASH,0,0},         2 },
+{ "Wolf",       2,  2, ELEM_NONE, RN,     70,  0, 28, 12,  6,  6, 25, 0,  22, 12, {SKILL_ATTACK,SKILL_BREAK,0,0},         2 },
+{ "Orc",        3,  3, ELEM_EARTH,RE,    100,  0, 35, 22, 10, 10, 14, 0,  35, 18, {SKILL_ATTACK,SKILL_SLASH,SKILL_SHATTER,0}, 3 },
+{ "Mage",       4,  4, ELEM_FIRE, RF,     60, 40, 12, 10, 30, 20, 20, 1,  40, 22, {SKILL_FIRE,SKILL_WATER,SKILL_SLOW_CAST,0}, 3 },
+{ "Dragon",     5,  5, ELEM_FIRE, RF,    280, 40, 55, 40, 50, 35, 22, 1,  90, 50, {SKILL_FIRAGA,SKILL_SLASH,SKILL_PETRIFY,0}, 3 },
+{ "Undead",     6,  6, ELEM_DARK, RU,     80,  0, 25, 18, 15, 10, 12, 0,  38, 20, {SKILL_ATTACK,SKILL_DRAIN,SKILL_SHADOW,0}, 3 },
+{ "FireEle",    7,  7, ELEM_FIRE, RF,     90, 30, 20, 15, 40, 10, 20, 0,  42, 24, {SKILL_FIRE,SKILL_FIRA,0,0},             2 },
+{ "WaterEle",   8,  8, ELEM_WATER,RW,     90, 30, 20, 15, 40, 10, 18, 0,  42, 24, {SKILL_WATER,SKILL_AQUA,0,0},            2 },
+{ "Golem",      9,  9, ELEM_EARTH,RE,    200,  0, 50, 60,  8, 30,  8, 0,  70, 40, {SKILL_ATTACK,SKILL_QUAKE,SKILL_SHATTER,0}, 3 },
+{ "DkKnight",  10, 10, ELEM_DARK, RU,    180, 20, 50, 35, 30, 25, 18, 1,  85, 45, {SKILL_SLASH,SKILL_SHADOW,SKILL_DOOM,0},  3 },
+{ "Serpent",   11, 11, ELEM_WATER,RW,    500, 80, 60, 50, 60, 45, 20, 2, 200,100, {SKILL_SLASH,SKILL_PETRIFY,SKILL_TIDAL,SKILL_ECLIPSE}, 4 },
 };
+
+#undef RN
+#undef RF
+#undef RW
+#undef RE
+#undef RU
 
 /* ---- Enemy groups (no name field per battler.h) ---------- */
 const EnemyGroup g_enemy_groups[GROUP_COUNT] = {
@@ -136,16 +131,15 @@ const ComboDef g_combo_table[BATTLE_COMBO_MAX] = {
 const u8 g_combo_count = 6;
 
 /* ---- Character roster ----------------------------------- */
-static const u8 s_c0_sk[] = { SKILL_ATTACK, SKILL_SLASH, SKILL_FIRE, SKILL_FIRA, SKILL_UNLEASH_SOLEIL };
-static const u8 s_c1_sk[] = { SKILL_ATTACK, SKILL_AQUA, SKILL_TIDAL, SKILL_HEAL, SKILL_UNLEASH_TIDE };
-static const u8 s_c2_sk[] = { SKILL_ATTACK, SKILL_QUAKE, SKILL_STONE_EDGE, SKILL_CURA, SKILL_UNLEASH_GAIA };
-static const u8 s_c3_sk[] = { SKILL_ATTACK, SKILL_GUST, SKILL_CYCLONE, SKILL_HASTE_CAST, SKILL_UNLEASH_STORM };
-
 const CharDef g_char_table[BATTLE_ALLY_MAX] = {
-  { "Kael",  0, 0, ELEM_FIRE,  220, 60, 45, 30, 35, 28, 22, {100,50,150,100,100,100,100}, s_c0_sk, 5 },
-  { "Lyra",  1, 1, ELEM_WATER, 180, 90, 28, 22, 55, 40, 26, {100,150,50,100,100,100,100}, s_c1_sk, 5 },
-  { "Gorin", 2, 2, ELEM_EARTH, 260, 40, 55, 50, 20, 35, 16, {100,100,100,50,150,100,100}, s_c2_sk, 5 },
-  { "Aria",  3, 3, ELEM_AIR,   200, 75, 32, 28, 48, 35, 30, {100,100,100,100,100,100,100},s_c3_sk, 5 },
+  { "Kael",  0, 0, ELEM_FIRE,  220, 60, 45, 30, 35, 28, 22, {100,50,150,100,100,100,100},
+    {SKILL_ATTACK,SKILL_SLASH,SKILL_FIRE,SKILL_FIRAGA,SKILL_UNLEASH_SOLEIL,0,0,0}, 5 },
+  { "Lyra",  1, 1, ELEM_WATER, 180, 90, 28, 22, 55, 40, 26, {100,150,50,100,100,100,100},
+    {SKILL_ATTACK,SKILL_AQUA,SKILL_TIDAL,SKILL_HEAL,SKILL_UNLEASH_TIDE,0,0,0}, 5 },
+  { "Gorin", 2, 2, ELEM_EARTH, 260, 40, 55, 50, 20, 35, 16, {100,100,100,50,150,100,100},
+    {SKILL_ATTACK,SKILL_QUAKE,SKILL_STONE_EDGE,SKILL_CURA,SKILL_UNLEASH_GAIA,0,0,0}, 5 },
+  { "Aria",  3, 3, ELEM_AIR,   200, 75, 32, 28, 48, 35, 30, {100,100,100,100,100,100,100},
+    {SKILL_ATTACK,SKILL_GUST,SKILL_CYCLONE,SKILL_HASTE_CAST,SKILL_UNLEASH_STORM,0,0,0}, 5 },
 };
 
 /* ---- Data access ---------------------------------------- */

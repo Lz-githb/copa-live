@@ -3,7 +3,7 @@
 #include "char_class.h"
 #include "char_talent.h"
 #include "character.h"
-#include "event_system.h"
+#include "../../engine/event.h"
 #include "gba_types.h"
 
 /* ---- Milestone tables ----------------------------------- */

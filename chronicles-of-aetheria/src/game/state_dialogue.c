@@ -12,10 +12,10 @@
  * only display setup and teardown.
  * ========================================================= */
 
-static void state_dialogue_enter(void);
-static void state_dialogue_exit(void);
-static void state_dialogue_update(void);
-static void state_dialogue_render(void);
+void state_dialogue_enter(void);
+void state_dialogue_exit(void);
+void state_dialogue_update(void);
+void state_dialogue_render(void);
 
 const GameState g_state_dialogue = {
     .id       = STATE_DIALOGUE,
@@ -27,7 +27,7 @@ const GameState g_state_dialogue = {
 
 static u16 s_saved_dispcnt;
 
-static void state_dialogue_enter(void)
+void state_dialogue_enter(void)
 {
     s_saved_dispcnt = REG_DISPCNT;
 
@@ -42,20 +42,20 @@ static void state_dialogue_enter(void)
     REG_BG0VOFS = 0;
 }
 
-static void state_dialogue_exit(void)
+void state_dialogue_exit(void)
 {
     interact_close();
     REG_DISPCNT = s_saved_dispcnt;
 }
 
-static void state_dialogue_update(void)
+void state_dialogue_update(void)
 {
     interact_update();
     if (!interact_busy())
         state_pop();
 }
 
-static void state_dialogue_render(void)
+void state_dialogue_render(void)
 {
     interact_render();
 }

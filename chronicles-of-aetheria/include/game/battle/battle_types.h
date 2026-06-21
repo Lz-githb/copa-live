@@ -124,7 +124,10 @@ typedef enum {
     EFF_STATUS_REMOVE, /* cure status */
     EFF_STAT_MOD,      /* modify ATK/DEF/etc */
     EFF_SUMMON,        /* summon elemental (AOE + secondary effect) */
+    EFF_MULTI_HIT,     /* two rapid hits */
 } EffectType;
+
+#define STATUS_PARALYZE  STATUS_SLOW  /* alias */
 
 /* ---- Stat modifier for EFF_STAT_MOD -------------------- */
 typedef enum {

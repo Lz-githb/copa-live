@@ -5,6 +5,7 @@
 #include "char_stats.h"
 #include "char_class.h"
 #include "char_equip.h"
+typedef struct Battler Battler;
 #include "char_skill.h"
 #include "char_talent.h"
 #include "char_xp.h"
@@ -116,7 +117,7 @@ BOOL character_deserialize(Character* ch, const u8* buf, u16 buf_size);
 /* ---- Battle integration --------------------------------- */
 
 /* Populate a Battler struct from this character */
-void character_to_battler(const Character* ch, struct Battler* out);
+void character_to_battler(const Character* ch, Battler* out);
 
 /* Apply battle results back to character (HP/MP/XP changes) */
 void character_from_battle_result(Character* ch,

@@ -29,10 +29,7 @@
 
 #define SHOP_VISIBLE_ROWS  11
 
-typedef enum {
-    SHOP_MODE_BUY = 0,
-    SHOP_MODE_SELL
-} ShopMode;
+typedef u8 ShopMode;  /* SHOP_MODE_BUY / SHOP_MODE_SELL from shop.h */
 
 typedef enum {
     SHOP_PHASE_LIST = 0,

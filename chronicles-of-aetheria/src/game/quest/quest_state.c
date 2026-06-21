@@ -1,7 +1,7 @@
 #include "quest_state.h"
 #include "inventory.h"
 #include "char_xp.h"
-#include "event_system.h"
+#include "../../engine/event.h"
 #include "gba_types.h"
 
 /* ---- Global state --------------------------------------- */

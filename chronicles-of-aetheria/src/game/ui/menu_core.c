@@ -68,7 +68,7 @@ static u16 _keys_down(void)
     return (~s_keys_cur) & s_keys_prev; /* bits low = pressed */
 }
 
-static u16 _keys_held(void) __attribute__((unused))
+static __attribute__((unused)) u16 _keys_held(void)
 {
     return (~s_keys_cur);
 }

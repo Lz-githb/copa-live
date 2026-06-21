@@ -1,5 +1,6 @@
 #include "../../include/game/world.h"
 #include "../../include/engine/engine.h"
+#include "../../include/game/npc.h"
 
 /* =========================================================
  * World / Map System Implementation

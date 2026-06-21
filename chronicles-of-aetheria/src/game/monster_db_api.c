@@ -3,7 +3,9 @@
 #include "../../include/game/monster_db.h"
 #include "../../include/game/item/inventory.h"
 #include "../../include/game/battle/battler.h"
-#include "../../include/engine/mem.h"
+#include "../../include/game/battle/battle_data.h"
+#include "../../include/engine/memory.h"
+#include "../../include/gba/gba_bios.h"
 
 /* =========================================================
  * Encounter groups — 60 total
@@ -145,7 +147,7 @@ u8 monster_random_encounter(u8 region, u8 player_level)
     return matches[_rand() % count];
 }
 
-void monster_to_enemy_def(const MonsterDef* mon, struct EnemyDef* out)
+void monster_to_enemy_def(const MonsterDef* mon, EnemyDef* out)
 {
     u8 i;
     if (!mon || !out) return;

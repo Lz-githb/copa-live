@@ -3,6 +3,9 @@
 
 #include "char_types.h"
 #include "char_stats.h"
+#include "../item/item_db.h"
+
+typedef struct Character Character;  /* forward declaration */
 
 /* =========================================================
  * Equipment System
@@ -22,15 +25,6 @@
 
 #define INVENTORY_SIZE    40
 #define ITEM_NONE_IDX     0xFF  /* "no item" sentinel in equip slots */
-
-/* Item rarity */
-typedef enum {
-    RARITY_COMMON    = 0,
-    RARITY_UNCOMMON  = 1,
-    RARITY_RARE      = 2,
-    RARITY_EPIC      = 3,
-    RARITY_LEGENDARY = 4,
-} ItemRarity;
 
 /* Passive equipment effect IDs */
 typedef enum {
@@ -137,33 +131,33 @@ extern const EquipDef g_equip_table[EQUIP_COUNT];
 void equip_system_init(void);
 
 /* Equip item from inventory into slot (returns FALSE if invalid) */
-BOOL equip_item(struct Character* ch, u8 slot, u8 item_id);
+BOOL equip_item(Character* ch, u8 slot, u8 item_id);
 
 /* Unequip slot (returns item_id or EQUIP_NONE) */
-u8 equip_remove(struct Character* ch, u8 slot);
+u8 equip_remove(Character* ch, u8 slot);
 
 /* Check if a character can equip this item */
-BOOL equip_can_use(const struct Character* ch, u8 item_id);
+BOOL equip_can_use(const Character* ch, u8 item_id);
 
 /* Compute total equipment bonuses for derived stats */
-void equip_compute_bonus(const struct Character* ch,
+void equip_compute_bonus(const Character* ch,
                           s16 out_dstat_bonus[DSTAT_COUNT]);
 
 /* Compute total equipment bonuses for base attrs */
-void equip_compute_attr_bonus(const struct Character* ch,
+void equip_compute_attr_bonus(const Character* ch,
                                s8 out_attr_bonus[ATTR_COUNT]);
 
 /* Get equipped item def (NULL if slot empty) */
-const EquipDef* equip_get_slot(const struct Character* ch, u8 slot);
+const EquipDef* equip_get_slot(const Character* ch, u8 slot);
 
 /* Add item to inventory (returns FALSE if full) */
-BOOL inventory_add(struct Character* ch, u8 item_id);
+BOOL inventory_add(Character* ch, u8 item_id);
 
 /* Remove item from inventory (returns FALSE if not found) */
-BOOL inventory_remove(struct Character* ch, u8 item_id);
+BOOL inventory_remove(Character* ch, u8 item_id);
 
 /* Find item in inventory (returns index or 0xFF) */
-u8 inventory_find(const struct Character* ch, u8 item_id);
+u8 inventory_find(const Character* ch, u8 item_id);
 
 const EquipDef* equip_get(u8 id);
 

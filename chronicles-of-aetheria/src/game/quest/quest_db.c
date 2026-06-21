@@ -1,7 +1,7 @@
-#include "quest_db.h"
-#include "item_db.h"
-#include "battle_data.h"
-#include "gba_types.h"
+#include "../../include/game/quest/quest_db.h"
+#include "../../include/game/item/item_db.h"
+#include "../../include/game/battle/battle_data.h"
+#include "../../include/gba/gba_types.h"
 
 /* =========================================================
  * Shorthand macros for readability
@@ -290,7 +290,7 @@ static const QuestDef q_herb_gather = {
         OBJ0,
     },
     REW(200, 200, ITEM_HI_POTION,3, ITEM_ETHER,2, ITEM_ANTIDOTE,5,
-        RECIPE_HI_POTION, 0xFF, 0, 0),
+        ITEM_HI_POTION, 0xFF, 0, 0),
     PRE_NONE,
     FALSE, FALSE, 0
 };
@@ -345,7 +345,7 @@ static const QuestDef q_haunted_inn = {
         OBJ("Derrote o Espectro do Porão",        QOBJ_SCRIPTED, QSIDE_HAUNTED_INN,  2),
         OBJ("Reporte ao Estalajadeiro",           QOBJ_TALK,     NSCR_INNKEEPER,     1),
     },
-    REW(1200, 1000, ITEM_CLOAK_SHADOW,0, ITEM_SHADOW_CLOTH,3, ITEM_REMEDY,3,
+    REW(1200, 1000, IITEM_CLOAK_SHADOW,0, ITEM_SHADOW_CLOTH,3, ITEM_REMEDY,3,
         0xFF, QSECRET_SHADOW_BLADE, 0, 0),
     PRE(QMAIN_GUILD_JOIN, 8, WF_GUILD_MEMBER, ITEM_NONE),
     FALSE, FALSE, 0
@@ -384,7 +384,7 @@ static const QuestDef q_dragon_scale = {
         OBJ0, OBJ0,
     },
     REW(5000, 4000, IITEM_PLATE_ARMOR,1, ITEM_TITAN_SCALE,3, ITEM_NONE,0,
-        RECIPE_TITAN_GS, 0xFF, WF_FORGE_LEGEND_OPEN, 0),
+        IITEM_TITAN_GS, 0xFF, WF_FORGE_LEGEND_OPEN, 0),
     PRE(QMAIN_CRYSTAL_HUNT, 20, WF_CRYSTALS_FOUND, ITEM_NONE),
     FALSE, FALSE, 0
 };
@@ -422,7 +422,7 @@ static const QuestDef q_escort = {
         OBJ("Chegue ao porto de Salvamar",    QOBJ_SCRIPTED,    QSIDE_ESCORT,  1),
         OBJ0,
     },
-    REW(800, 700, ITEM_HI_POTION,5, ITEM_HI_ETHER,3, ITEM_RING_SPEED,0,
+    REW(800, 700, ITEM_HI_POTION,5, ITEM_HI_ETHER,3, IITEM_RING_SPEED,0,
         0xFF, 0xFF, 0, 0),
     PRE(QMAIN_GUILD_JOIN, 5, WF_GUILD_MEMBER, ITEM_NONE),
     FALSE, TRUE, 0
@@ -457,7 +457,7 @@ static const QuestDef q_legendary_forge = {
     {
         OBJ("Obtenha 1 Runa Antiga",         QOBJ_COLLECT, ITEM_ANCIENT_RUNE,    1),
         OBJ("Obtenha o Coração do Titã",     QOBJ_COLLECT, ITEM_TITAN_HEART,     1),
-        OBJ("Forje um item lendário",        QOBJ_CRAFT,   RECIPE_TITAN_GS,      1),
+        OBJ("Forje um item lendário",        QOBJ_CRAFT,   IITEM_TITAN_GS,      1),
         OBJ("Mostre ao Sábio Orion",         QOBJ_TALK,    NSCR_OLD_SAGE,        1),
     },
     REW(10000, 8000, ITEM_ASTRAL_DUST,3, ITEM_CHAOS_ORB,1, ITEM_NONE,0,

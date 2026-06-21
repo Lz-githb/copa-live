@@ -25,6 +25,15 @@
 #define ITEM_ID_NONE   0xFF   /* sentinel: "no item" */
 #define ITEM_DB_COUNT  128
 
+/* Item rarity */
+typedef enum {
+    RARITY_COMMON    = 0,
+    RARITY_UNCOMMON  = 1,
+    RARITY_RARE      = 2,
+    RARITY_EPIC      = 3,
+    RARITY_LEGENDARY = 4,
+} ItemRarity;
+
 /* Item category */
 typedef enum {
     ICAT_EQUIPMENT  = 0,  /* weapon/armor/accessory */

@@ -24,7 +24,7 @@
 
 #define QUEST_SAVE_MAGIC    0x51u
 #define QUEST_SAVE_OFFSET   0        /* offset in SaveSlot.extra[] */
-#define QUEST_SAVE_SIZE     156
+#define QUEST_SAVE_SIZE     160
 
 /* ---- Runtime quest progress ----------------------------- */
 typedef struct {

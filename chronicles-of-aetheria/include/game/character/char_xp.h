@@ -2,6 +2,7 @@
 #define CHAR_XP_H
 
 #include "char_types.h"
+typedef struct Character Character;
 
 /* =========================================================
  * Experience & Level System
@@ -51,15 +52,15 @@ extern const LevelMilestone g_milestones[CLASS_COUNT][MILESTONE_COUNT];
 /* ---- API ------------------------------------------------ */
 
 /* Add XP to a character; handles multi-level-up; returns levels gained */
-u8 xp_award(struct Character* ch, u32 amount);
+u8 xp_award(Character* ch, u32 amount);
 
 /* Perform a single level-up (called internally by xp_award) */
-void xp_do_levelup(struct Character* ch);
+void xp_do_levelup(Character* ch);
 
 /* Check and unlock skills for current level */
-void xp_check_skill_unlocks(struct Character* ch);
+void xp_check_skill_unlocks(Character* ch);
 
 /* Apply class milestone rewards at specific levels */
-void xp_apply_milestones(struct Character* ch, u8 old_level, u8 new_level);
+void xp_apply_milestones(Character* ch, u8 old_level, u8 new_level);
 
 #endif /* CHAR_XP_H */

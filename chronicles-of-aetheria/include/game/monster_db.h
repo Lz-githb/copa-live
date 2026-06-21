@@ -3,6 +3,7 @@
 
 #include "gba_types.h"
 #include "battle_types.h"
+#include "battler.h"
 
 /* =========================================================
  * Monster Database — 150 monsters organized by region
@@ -278,7 +279,7 @@ const MonsterGroup*   monster_group_get(u8 id);
 u8 monster_random_encounter(u8 region, u8 player_level);
 
 /* Populate EnemyDef-compatible struct for battle system */
-void monster_to_enemy_def(const MonsterDef* mon, struct EnemyDef* out);
+void monster_to_enemy_def(const MonsterDef* mon, EnemyDef* out);
 
 /* Roll loot drops after kill; adds items to g_bag */
 void monster_roll_loot(const MonsterDef* mon);

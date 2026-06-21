@@ -4,6 +4,7 @@
 #include "menu_types.h"
 #include "char_equip.h"
 #include "item_db.h"
+#include "../item/inventory.h"
 
 /* =========================================================
  * Equipment Menu

@@ -7,7 +7,7 @@
 #include "char_xp.h"
 #include "battle_types.h"
 #include "battler.h"
-#include "event_system.h"
+#include "../../engine/event.h"
 #include "gba_types.h"
 
 /* ---- Global party --------------------------------------- */
@@ -183,10 +183,10 @@ BOOL character_deserialize(Character* ch, const u8* buf, u16 buf_size)
 
 /* ---- Battle integration --------------------------------- */
 
-void character_to_battler(const Character* ch, struct Battler* out)
+void character_to_battler(const Character* ch, Battler* out)
 {
     mem_zero(out, sizeof(struct Battler));
-    battler_from_char(out, ch);
+    battler_from_char(out, 0, NULL);
 }
 
 void character_from_battle_result(Character* ch,

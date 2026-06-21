@@ -72,7 +72,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
     FALSE, "A pack predator that hunts the edges of Aelwyn forest."
 },
 [MON_GIANT_BEE] = {
-    "Giant Bee", 6, 0, ELEM_WIND,
+    "Giant Bee", 6, 0, ELEM_AIR,
     30,  0, 11,  3,  0,  4, 13,
     {N,N,N,W,R,N,N},
     10, 3, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
@@ -200,7 +200,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
     FALSE, "Fires enchanted arrows from long range with deadly accuracy."
 },
 [MON_PIXIE] = {
-    "Pixie", 20, 3, ELEM_WIND,
+    "Pixie", 20, 3, ELEM_AIR,
     35,  50,  8,  4, 22, 14, 16,
     {N,N,N,W,R,N,N},
     30, 10, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
@@ -209,7 +209,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
     FALSE, "A mischievous fairy that casts confusion and sleep spells."
 },
 [MON_HORNET_SWARM] = {
-    "Hornet Swarm", 21, 0, ELEM_WIND,
+    "Hornet Swarm", 21, 0, ELEM_AIR,
     60,  0, 17,  3,  0,  5, 17,
     {N,N,N,W,R,N,N},
     28, 9, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_AGGRESSIVE,
@@ -245,7 +245,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
     FALSE, "Its scream causes paralysis. Harvesting its root is dangerous."
 },
 [MON_SPORE_BAT] = {
-    "Spore Bat", 25, 0, ELEM_WIND,
+    "Spore Bat", 25, 0, ELEM_AIR,
     50,  0, 13,  4,  0,  5, 14,
     {N,N,N,W,R,N,N},
     24, 8, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
@@ -474,7 +474,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
     FALSE, "A construct born from the swamp's toxic mud. Resists water and earth."
 },
 [MON_SPORE_CLOUD] = {
-    "Spore Cloud", 50, 29, ELEM_WIND,
+    "Spore Cloud", 50, 29, ELEM_AIR,
     45,  20,  8,  2, 16, 12, 12,
     {N,N,N,N,R,N,N},
     25, 8, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
@@ -521,7 +521,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 
 /* ---- Ironpeak Mountains (55-69) -------------------------------- */
 [MON_MOUNTAIN_WOLF] = {
-    "Mountain Wolf", 55, 34, ELEM_WIND,
+    "Mountain Wolf", 55, 34, ELEM_AIR,
     100,  0, 26,  8,  0,  8, 14,
     {N,N,N,N,R,N,N},
     50, 15, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 1, AI_AGGRESSIVE,
@@ -530,7 +530,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
     FALSE, "A pack hunter adapted to mountain altitudes. Hunts in packs."
 },
 [MON_HARPY] = {
-    "Harpy", 56, 35, ELEM_WIND,
+    "Harpy", 56, 35, ELEM_AIR,
     85,  0, 24,  8,  0,  9, 16,
     {N,N,N,W,R,N,N},
     55, 16, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
@@ -539,7 +539,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
     FALSE, "A winged woman-beast that dives from mountain peaks to attack."
 },
 [MON_WYVERN] = {
-    "Wyvern", 57, 36, ELEM_WIND,
+    "Wyvern", 57, 36, ELEM_AIR,
     160,  0, 32, 14,  0, 12, 13,
     {N,N,N,W,R,N,N},
     90, 25, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 1, AI_AGGRESSIVE,
@@ -557,7 +557,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
     FALSE, "Nearly indistinguishable from the boulders it sleeps among."
 },
 [MON_WIND_ELEMENTAL] = {
-    "Wind Elemental", 59, 38, ELEM_WIND,
+    "Wind Elemental", 59, 38, ELEM_AIR,
     120,  50, 22, 10, 28, 18, 18,
     {N,N,N,W,A,N,N},
     75, 21, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
@@ -584,7 +584,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
     FALSE, "A massive, fur-covered beast of the high peaks. Roars cause fear."
 },
 [MON_STORM_EAGLE] = {
-    "Storm Eagle", 62, 41, ELEM_WIND,
+    "Storm Eagle", 62, 41, ELEM_AIR,
     100,  0, 28, 10,  0, 10, 17,
     {N,N,N,N,R,N,N},
     60, 17, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_AGGRESSIVE,
@@ -611,7 +611,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
     FALSE, "A creature of living stone as tall as a mountain fortress tower."
 },
 [MON_THUNDER_LIZARD] = {
-    "Thunder Lizard", 65, 44, ELEM_WIND,
+    "Thunder Lizard", 65, 44, ELEM_AIR,
     150,  0, 30, 16,  0, 12, 12,
     {N,N,N,W,R,N,N},
     80, 22, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
@@ -640,14 +640,16 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_ORC_CHAMPION] = {
     "Orc Champion", 68, 47, ELEM_NONE,
     240,  0, 38, 22,  0, 14,  9,
+    {N,N,N,N,N,N,N},
     120, 32, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 1, AI_AGGRESSIVE,
     REGION_MOUNTAINS, 16, 22,
     {{ITEM_STEEL_INGOT,2,35},{ITEM_IRON_ORE,4,45},{ITEM_ANCIENT_RUNE,1,8}},
     FALSE, "A warchief who leads the mountain orc clans in battle."
 },
 [MON_PEAK_WYVERN] = {
-    "Peak Wyvern", 69, 48, ELEM_WIND,
+    "Peak Wyvern", 69, 48, ELEM_AIR,
     280,  0, 40, 20,  0, 18, 14,
+    {N,N,N,N,N,N,N},
     140, 38, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_MOUNTAINS, 17, 23,
     {{ITEM_DRAGON_SCALE,3,45},{ITEM_WIND_ESSENCE,3,35},{ITEM_STORM_CORE,2,20}},
@@ -712,6 +714,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_RUNE_GUARDIAN] = {
     "Rune Guardian", 76, 55, ELEM_LIGHT,
     200,  60, 28, 22, 24, 20,  7,
+    {N,N,N,N,N,N,N},
     110, 30, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_RUINS, 16, 22,
     {{ITEM_ANCIENT_RUNE,3,45},{ITEM_LIGHT_ESSENCE,2,30},{ITEM_MANA_SHARD,2,25}},
@@ -720,6 +723,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_CURSE_WISP] = {
     "Curse Wisp", 77, 56, ELEM_DARK,
     70,  50, 14,  6, 24, 20, 13,
+    {N,N,N,N,N,N,N},
     55, 16, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
     REGION_RUINS, 15, 21,
     {{ITEM_DARK_ESSENCE,2,50},{ITEM_MANA_SHARD,1,30},{ITEM_NONE,0,0}},
@@ -728,6 +732,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_SHADOW_KNIGHT] = {
     "Shadow Knight", 78, 57, ELEM_DARK,
     220,  0, 36, 24,  0, 16, 10,
+    {N,N,N,N,N,N,N},
     120, 33, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 1, AI_AGGRESSIVE,
     REGION_RUINS, 17, 23,
     {{ITEM_DARK_ESSENCE,3,40},{ITEM_SHADOW_CLOTH,2,25},{ITEM_STEEL_INGOT,1,15}},
@@ -736,6 +741,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_LICH_APPRENTICE] = {
     "Lich Apprentice", 79, 58, ELEM_DARK,
     120,  80, 16, 10, 32, 22, 11,
+    {N,N,N,N,N,N,N},
     100, 28, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_RUINS, 17, 23,
     {{ITEM_DARK_ESSENCE,3,45},{ITEM_ARCANE_DUST,3,35},{ITEM_ANCIENT_RUNE,1,15}},
@@ -744,6 +750,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_BONE_DRAGON] = {
     "Bone Dragon", 80, 59, ELEM_DARK,
     350,  0, 40, 28,  0, 20,  8,
+    {N,N,N,N,N,N,N},
     160, 42, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_RUINS, 19, 25,
     {{ITEM_DRAGON_FANG,2,30},{ITEM_BONE_FRAGMENT,5,60},{ITEM_DARK_ESSENCE,3,35}},
@@ -752,6 +759,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_VOID_SHADE] = {
     "Void Shade", 81, 60, ELEM_DARK,
     140,  40, 28, 12, 26, 22, 15,
+    {N,N,N,N,N,N,N},
     95, 26, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_RUINS, 18, 24,
     {{ITEM_VOID_CRYSTAL,1,20},{ITEM_DARK_ESSENCE,3,40},{ITEM_SHADOW_ESSENCE,1,15}},
@@ -760,6 +768,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_RUIN_COLOSSUS] = {
     "Ruin Colossus", 82, 61, ELEM_NONE,
     400,  0, 42, 32,  0, 18,  2,
+    {N,N,N,N,N,N,N},
     170, 45, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_RUINS, 19, 25,
     {{ITEM_STEEL_INGOT,4,40},{ITEM_ANCIENT_RUNE,3,30},{ITEM_IRON_ORE,6,50}},
@@ -768,6 +777,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_DARK_PRIEST] = {
     "Dark Priest", 83, 62, ELEM_DARK,
     130,  90, 18, 12, 34, 24, 10,
+    {N,N,N,N,N,N,N},
     135, 36, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_RUINS, 18, 24,
     {{ITEM_DARK_ESSENCE,4,45},{ITEM_ARCANE_DUST,3,35},{ITEM_ANCIENT_RUNE,2,20}},
@@ -796,6 +806,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_ASH_GOLEM] = {
     "Ash Golem", 86, 65, ELEM_FIRE,
     230,  0, 30, 22,  0, 14,  3,
+    {N,N,N,N,N,N,N},
     90, 25, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
     REGION_VOLCANO, 18, 24,
     {{ITEM_FIRE_ESSENCE,3,45},{ITEM_COAL,4,50},{ITEM_EARTH_ESSENCE,1,15}},
@@ -804,6 +815,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_FIRE_IMP] = {
     "Fire Imp", 87, 66, ELEM_FIRE,
     70,  30, 18,  8, 22, 12, 15,
+    {N,N,N,N,N,N,N},
     45, 13, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
     REGION_VOLCANO, 17, 23,
     {{ITEM_FIRE_ESSENCE,2,45},{ITEM_ARCANE_DUST,2,30},{ITEM_NONE,0,0}},
@@ -812,6 +824,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_MAGMA_CRAB] = {
     "Magma Crab", 88, 67, ELEM_FIRE,
     160,  0, 20, 28,  0, 14,  2,
+    {N,N,N,N,N,N,N},
     65, 18, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
     REGION_VOLCANO, 18, 24,
     {{ITEM_FIRE_ESSENCE,2,40},{ITEM_IRON_ORE,3,35},{ITEM_STEEL_INGOT,1,10}},
@@ -820,6 +833,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_FLAME_BAT] = {
     "Flame Bat", 89, 68, ELEM_FIRE,
     80,  0, 22, 10,  0, 10, 16,
+    {N,N,N,N,N,N,N},
     42, 12, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_AGGRESSIVE,
     REGION_VOLCANO, 17, 23,
     {{ITEM_FIRE_ESSENCE,1,40},{ITEM_FEATHER,2,30},{ITEM_NONE,0,0}},
@@ -828,6 +842,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_FIRE_ELEMENTAL] = {
     "Fire Elemental", 90, 69, ELEM_FIRE,
     150,  60, 28, 14, 34, 18, 13,
+    {N,N,N,N,N,N,N},
     90, 25, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
     REGION_VOLCANO, 19, 25,
     {{ITEM_FIRE_ESSENCE,4,60},{ITEM_ETERNAL_FLAME,1,10},{ITEM_MANA_SHARD,2,25}},
@@ -836,6 +851,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_VOLCANO_TROLL] = {
     "Volcano Troll", 91, 70, ELEM_FIRE,
     300,  0, 36, 24,  0, 16,  4,
+    {N,N,N,N,N,N,N},
     115, 31, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 1, AI_AGGRESSIVE,
     REGION_VOLCANO, 20, 26,
     {{ITEM_FIRE_ESSENCE,3,45},{ITEM_IRON_ORE,5,50},{ITEM_MONSTER_HIDE,3,30}},
@@ -844,6 +860,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_EMBER_SNAKE] = {
     "Ember Snake", 92, 71, ELEM_FIRE,
     120,  0, 26, 14,  0, 12, 14,
+    {N,N,N,N,N,N,N},
     60, 17, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_VOLCANO, 19, 25,
     {{ITEM_SNAKE_VENOM,2,35},{ITEM_FIRE_ESSENCE,2,40},{ITEM_DRAGON_SCALE,1,10}},
@@ -852,6 +869,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_HEAT_WRAITH] = {
     "Heat Wraith", 93, 72, ELEM_FIRE,
     110,  40, 24, 10, 26, 18, 14,
+    {N,N,N,N,N,N,N},
     70, 20, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_VOLCANO, 19, 25,
     {{ITEM_FIRE_ESSENCE,2,45},{ITEM_DARK_ESSENCE,1,20},{ITEM_ETERNAL_FLAME,1,8}},
@@ -860,6 +878,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_MOLTEN_GOLEM] = {
     "Molten Golem", 94, 73, ELEM_FIRE,
     380,  0, 40, 30,  0, 18,  2,
+    {N,N,N,N,N,N,N},
     150, 40, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_VOLCANO, 21, 27,
     {{ITEM_FIRE_ESSENCE,5,65},{ITEM_STEEL_INGOT,3,35},{ITEM_ETERNAL_FLAME,1,12}},
@@ -868,6 +887,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_PYROMANCER] = {
     "Pyromancer", 95, 74, ELEM_FIRE,
     140,  100, 20, 14, 40, 22, 11,
+    {N,N,N,N,N,N,N},
     130, 35, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_VOLCANO, 21, 27,
     {{ITEM_FIRE_ESSENCE,4,50},{ITEM_ARCANE_DUST,4,40},{ITEM_ETERNAL_FLAME,1,15}},
@@ -876,6 +896,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_INFERNO_WYRM] = {
     "Inferno Wyrm", 96, 75, ELEM_FIRE,
     450,  0, 44, 26,  0, 22, 10,
+    {N,N,N,N,N,N,N},
     180, 48, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_VOLCANO, 22, 28,
     {{ITEM_DRAGON_SCALE,4,50},{ITEM_ETERNAL_FLAME,2,20},{ITEM_DRAGON_FANG,2,25}},
@@ -886,6 +907,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_SNOW_WOLF] = {
     "Snow Wolf", 97, 76, ELEM_WATER,
     130,  0, 28, 12,  0, 10, 15,
+    {N,N,N,N,N,N,N},
     60, 17, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 1, AI_AGGRESSIVE,
     REGION_SNOWLANDS, 20, 26,
     {{ITEM_MONSTER_HIDE,3,50},{ITEM_ICE_ESSENCE,1,25},{ITEM_NONE,0,0}},
@@ -894,6 +916,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_FROST_BAT] = {
     "Frost Bat", 98, 77, ELEM_WATER,
     85,  0, 22, 10,  0, 10, 16,
+    {N,N,N,N,N,N,N},
     42, 13, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
     REGION_SNOWLANDS, 19, 25,
     {{ITEM_ICE_ESSENCE,1,40},{ITEM_FEATHER,2,30},{ITEM_NONE,0,0}},
@@ -902,6 +925,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_ICE_TROLL] = {
     "Ice Troll", 99, 78, ELEM_WATER,
     290,  0, 34, 22,  0, 14,  4,
+    {N,N,N,N,N,N,N},
     105, 29, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 1, AI_AGGRESSIVE,
     REGION_SNOWLANDS, 20, 26,
     {{ITEM_ICE_ESSENCE,3,45},{ITEM_BONE_FRAGMENT,3,35},{ITEM_MONSTER_HIDE,3,30}},
@@ -910,6 +934,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_SNOW_GIANT] = {
     "Snow Giant", 100, 79, ELEM_WATER,
     380,  0, 40, 26,  0, 16,  3,
+    {N,N,N,N,N,N,N},
     140, 38, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 1, AI_AGGRESSIVE,
     REGION_SNOWLANDS, 21, 27,
     {{ITEM_ICE_ESSENCE,4,50},{ITEM_STEEL_INGOT,2,25},{ITEM_TITAN_HEART,1,5}},
@@ -918,6 +943,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_BLIZZARD_WISP] = {
     "Blizzard Wisp", 101, 80, ELEM_WATER,
     90,  60, 20, 10, 28, 20, 14,
+    {N,N,N,N,N,N,N},
     70, 20, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
     REGION_SNOWLANDS, 20, 26,
     {{ITEM_ICE_ESSENCE,2,50},{ITEM_MANA_SHARD,2,30},{ITEM_FROZEN_TEAR,1,15}},
@@ -926,6 +952,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_FROST_GOLEM] = {
     "Frost Golem", 102, 81, ELEM_WATER,
     300,  0, 32, 26,  0, 16,  2,
+    {N,N,N,N,N,N,N},
     110, 30, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_SNOWLANDS, 21, 27,
     {{ITEM_ICE_ESSENCE,4,55},{ITEM_FROZEN_TEAR,2,25},{ITEM_STEEL_INGOT,2,20}},
@@ -934,6 +961,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_WENDIGO] = {
     "Wendigo", 103, 82, ELEM_DARK,
     250,  20, 38, 18, 12, 16, 13,
+    {N,N,N,N,N,N,N},
     130, 35, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_SNOWLANDS, 21, 27,
     {{ITEM_DARK_ESSENCE,3,40},{ITEM_ICE_ESSENCE,2,30},{ITEM_MONSTER_HIDE,4,45}},
@@ -942,6 +970,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_ICE_SERPENT] = {
     "Ice Serpent", 104, 83, ELEM_WATER,
     180,  0, 32, 16,  0, 14, 12,
+    {N,N,N,N,N,N,N},
     85, 24, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_SNOWLANDS, 20, 26,
     {{ITEM_ICE_ESSENCE,3,45},{ITEM_SNAKE_VENOM,2,25},{ITEM_FROZEN_TEAR,1,15}},
@@ -950,6 +979,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_POLAR_BEAR] = {
     "Polar Bear", 105, 84, ELEM_WATER,
     200,  0, 34, 18,  0, 12,  7,
+    {N,N,N,N,N,N,N},
     80, 22, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 1, AI_AGGRESSIVE,
     REGION_SNOWLANDS, 19, 25,
     {{ITEM_MONSTER_HIDE,4,55},{ITEM_BONE_FRAGMENT,2,25},{ITEM_ICE_ESSENCE,1,15}},
@@ -958,6 +988,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_CRYSTAL_IMP] = {
     "Crystal Imp", 106, 85, ELEM_WATER,
     80,  40, 16, 12, 24, 18, 15,
+    {N,N,N,N,N,N,N},
     55, 16, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
     REGION_SNOWLANDS, 20, 26,
     {{ITEM_ICE_ESSENCE,2,45},{ITEM_CRYSTAL_SHARD,2,35},{ITEM_ARCANE_DUST,1,20}},
@@ -966,6 +997,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_GLACIER_CRAB] = {
     "Glacier Crab", 107, 86, ELEM_WATER,
     220,  0, 24, 30,  0, 16,  2,
+    {N,N,N,N,N,N,N},
     90, 25, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
     REGION_SNOWLANDS, 21, 27,
     {{ITEM_ICE_ESSENCE,3,50},{ITEM_IRON_ORE,2,25},{ITEM_FROZEN_TEAR,1,15}},
@@ -974,6 +1006,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_FROST_DRAGON] = {
     "Frost Dragon", 108, 87, ELEM_WATER,
     500,  0, 46, 28,  0, 24, 11,
+    {N,N,N,N,N,N,N},
     200, 55, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_SNOWLANDS, 23, 29,
     {{ITEM_DRAGON_SCALE,5,55},{ITEM_FROZEN_TEAR,3,30},{ITEM_DRAGON_FANG,2,20}},
@@ -982,6 +1015,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_SNOW_WITCH] = {
     "Snow Witch", 109, 88, ELEM_WATER,
     160,  110, 22, 16, 44, 28, 12,
+    {N,N,N,N,N,N,N},
     160, 44, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_SNOWLANDS, 22, 28,
     {{ITEM_ICE_ESSENCE,5,55},{ITEM_ARCANE_DUST,4,40},{ITEM_FROZEN_TEAR,2,20}},
@@ -1001,6 +1035,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_SHARK] = {
     "Shark", 111, 90, ELEM_WATER,
     180,  0, 36, 16,  0, 12, 14,
+    {N,N,N,N,N,N,N},
     80, 22, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 1, AI_AGGRESSIVE,
     REGION_OCEAN, 20, 26,
     {{ITEM_MONSTER_HIDE,3,50},{ITEM_BONE_FRAGMENT,2,30},{ITEM_NONE,0,0}},
@@ -1009,6 +1044,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_JELLYFISH] = {
     "Jellyfish", 112, 91, ELEM_WATER,
     70,  0, 14,  6,  0, 10,  7,
+    {N,N,N,N,N,N,N},
     30, 9, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
     REGION_OCEAN, 19, 25,
     {{ITEM_PURE_WATER,2,45},{ITEM_SNAKE_VENOM,1,25},{ITEM_NONE,0,0}},
@@ -1017,6 +1053,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_WATER_ELEMENTAL] = {
     "Water Elemental", 113, 92, ELEM_WATER,
     160,  60, 26, 14, 30, 20, 11,
+    {N,N,N,N,N,N,N},
     90, 25, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
     REGION_OCEAN, 21, 27,
     {{ITEM_PURE_WATER,3,55},{ITEM_MANA_SHARD,2,30},{ITEM_ICE_ESSENCE,1,15}},
@@ -1025,6 +1062,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_SEA_SERPENT] = {
     "Sea Serpent", 114, 93, ELEM_WATER,
     280,  0, 40, 20,  0, 18, 12,
+    {N,N,N,N,N,N,N},
     120, 33, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_OCEAN, 21, 27,
     {{ITEM_DRAGON_SCALE,3,40},{ITEM_SNAKE_VENOM,3,35},{ITEM_MONSTER_HIDE,3,30}},
@@ -1033,6 +1071,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_MERROW] = {
     "Merrow", 115, 94, ELEM_WATER,
     140,  60, 28, 14, 24, 18, 12,
+    {N,N,N,N,N,N,N},
     75, 21, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_OCEAN, 20, 26,
     {{ITEM_PURE_WATER,2,40},{ITEM_MANA_SHARD,2,25},{ITEM_ARCANE_DUST,1,15}},
@@ -1041,6 +1080,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_DEEP_ANGLER] = {
     "Deep Angler", 116, 95, ELEM_DARK,
     200,  20, 32, 18, 14, 14,  8,
+    {N,N,N,N,N,N,N},
     100, 28, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_AGGRESSIVE,
     REGION_OCEAN, 21, 27,
     {{ITEM_DARK_ESSENCE,2,35},{ITEM_MONSTER_HIDE,3,45},{ITEM_NONE,0,0}},
@@ -1049,6 +1089,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_TIDE_CRAB] = {
     "Tide Crab", 117, 96, ELEM_WATER,
     190,  0, 26, 28,  0, 16,  3,
+    {N,N,N,N,N,N,N},
     75, 21, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
     REGION_OCEAN, 20, 26,
     {{ITEM_IRON_ORE,3,40},{ITEM_MONSTER_HIDE,2,30},{ITEM_PURE_WATER,2,35}},
@@ -1057,6 +1098,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_CORAL_GOLEM] = {
     "Coral Golem", 118, 97, ELEM_WATER,
     320,  0, 32, 30,  0, 18,  2,
+    {N,N,N,N,N,N,N},
     120, 33, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_OCEAN, 22, 28,
     {{ITEM_CRYSTAL_SHARD,4,50},{ITEM_EARTH_ESSENCE,2,25},{ITEM_PURE_WATER,3,40}},
@@ -1065,6 +1107,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_SIREN] = {
     "Siren", 119, 98, ELEM_WATER,
     170,  90, 24, 14, 40, 28, 14,
+    {N,N,N,N,N,N,N},
     140, 38, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_OCEAN, 22, 28,
     {{ITEM_MANA_SHARD,3,40},{ITEM_ARCANE_DUST,3,35},{ITEM_MOONSTONE,1,10}},
@@ -1073,6 +1116,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_LEVIATHAN_PAWN] = {
     "Leviathan Pawn", 120, 99, ELEM_WATER,
     350,  0, 40, 24,  0, 20, 10,
+    {N,N,N,N,N,N,N},
     150, 40, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_OCEAN, 23, 29,
     {{ITEM_DRAGON_SCALE,4,45},{ITEM_PURE_WATER,5,55},{ITEM_MONSTER_HIDE,4,40}},
@@ -1081,6 +1125,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_OCEAN_DRAGON] = {
     "Ocean Dragon", 121, 100, ELEM_WATER,
     500,  0, 48, 28,  0, 26, 11,
+    {N,N,N,N,N,N,N},
     200, 55, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_OCEAN, 24, 30,
     {{ITEM_DRAGON_SCALE,6,55},{ITEM_DRAGON_FANG,3,25},{ITEM_CHAOS_ORB,1,5}},
@@ -1100,6 +1145,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_NIGHTMARE] = {
     "Nightmare", 123, 102, ELEM_DARK,
     210,  30, 38, 18, 14, 18, 16,
+    {N,N,N,N,N,N,N},
     130, 35, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_SHADOWREALM, 27, 33,
     {{ITEM_DARK_ESSENCE,4,50},{ITEM_SHADOW_ESSENCE,2,30},{ITEM_VOID_CRYSTAL,1,10}},
@@ -1108,6 +1154,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_VOID_SPRITE] = {
     "Void Sprite", 124, 103, ELEM_DARK,
     90,  60, 18, 10, 30, 24, 17,
+    {N,N,N,N,N,N,N},
     80, 22, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
     REGION_SHADOWREALM, 26, 32,
     {{ITEM_VOID_CRYSTAL,1,30},{ITEM_DARK_ESSENCE,2,40},{ITEM_MANA_SHARD,2,25}},
@@ -1116,6 +1163,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_DARK_ELF] = {
     "Dark Elf", 125, 104, ELEM_DARK,
     170,  50, 36, 18, 24, 20, 16,
+    {N,N,N,N,N,N,N},
     110, 30, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 1, AI_AGGRESSIVE,
     REGION_SHADOWREALM, 27, 33,
     {{ITEM_DARK_ESSENCE,3,45},{ITEM_SHADOW_CLOTH,2,30},{ITEM_ARCANE_DUST,2,25}},
@@ -1124,6 +1172,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_SHADE] = {
     "Shade", 126, 105, ELEM_DARK,
     130,  40, 26, 12, 24, 22, 15,
+    {N,N,N,N,N,N,N},
     85, 24, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_SHADOWREALM, 26, 32,
     {{ITEM_DARK_ESSENCE,3,50},{ITEM_SHADOW_ESSENCE,1,20},{ITEM_NONE,0,0}},
@@ -1132,6 +1181,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_SHADOW_BEAST] = {
     "Shadow Beast", 127, 106, ELEM_DARK,
     280,  0, 42, 20, 10, 18, 14,
+    {N,N,N,N,N,N,N},
     140, 38, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 1, AI_AGGRESSIVE,
     REGION_SHADOWREALM, 27, 33,
     {{ITEM_SHADOW_ESSENCE,3,45},{ITEM_DARK_ESSENCE,4,50},{ITEM_MONSTER_HIDE,3,30}},
@@ -1140,6 +1190,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_DARK_KNIGHT_SR] = {
     "Dark Knight", 128, 107, ELEM_DARK,
     260,  0, 44, 28,  0, 20, 11,
+    {N,N,N,N,N,N,N},
     150, 40, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 1, AI_AGGRESSIVE,
     REGION_SHADOWREALM, 28, 34,
     {{ITEM_SHADOW_CLOTH,3,40},{ITEM_DARK_ESSENCE,4,45},{ITEM_STEEL_INGOT,2,20}},
@@ -1148,6 +1199,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_SOUL_EATER] = {
     "Soul Eater", 129, 108, ELEM_DARK,
     200,  60, 36, 16, 30, 24, 14,
+    {N,N,N,N,N,N,N},
     160, 43, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_SHADOWREALM, 28, 34,
     {{ITEM_VOID_CRYSTAL,2,30},{ITEM_SHADOW_ESSENCE,3,40},{ITEM_DARK_ESSENCE,4,45}},
@@ -1156,6 +1208,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_VOID_KNIGHT] = {
     "Void Knight", 130, 109, ELEM_DARK,
     310,  0, 46, 30,  0, 22, 12,
+    {N,N,N,N,N,N,N},
     175, 47, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_SHADOWREALM, 29, 35,
     {{ITEM_VOIDSTONE,1,15},{ITEM_SHADOW_ESSENCE,4,45},{ITEM_DARK_ESSENCE,5,50}},
@@ -1164,6 +1217,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_PHANTOM_MAGE] = {
     "Phantom Mage", 131, 110, ELEM_DARK,
     180,  120, 22, 14, 50, 30, 14,
+    {N,N,N,N,N,N,N},
     180, 48, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_SHADOWREALM, 29, 35,
     {{ITEM_VOID_CRYSTAL,2,30},{ITEM_ARCANE_DUST,5,50},{ITEM_SHADOW_ESSENCE,3,35}},
@@ -1172,6 +1226,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_ABYSSAL_WRAITH] = {
     "Abyssal Wraith", 132, 111, ELEM_DARK,
     230,  60, 40, 16, 32, 28, 16,
+    {N,N,N,N,N,N,N},
     190, 51, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_SHADOWREALM, 29, 35,
     {{ITEM_VOIDSTONE,1,12},{ITEM_SHADOW_ESSENCE,4,45},{ITEM_CHAOS_ORB,1,5}},
@@ -1180,6 +1235,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_DARK_COLOSSUS] = {
     "Dark Colossus", 133, 112, ELEM_DARK,
     500,  0, 50, 34,  0, 26,  4,
+    {N,N,N,N,N,N,N},
     220, 58, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_SHADOWREALM, 30, 36,
     {{ITEM_SHADOW_ESSENCE,6,60},{ITEM_VOIDSTONE,2,20},{ITEM_CHAOS_ORB,1,8}},
@@ -1188,6 +1244,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_VOID_WALKER_MON] = {
     "Void Walker", 134, 113, ELEM_DARK,
     280,  80, 42, 20, 38, 30, 17,
+    {N,N,N,N,N,N,N},
     210, 56, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_SHADOWREALM, 30, 36,
     {{ITEM_VOIDSTONE,2,25},{ITEM_VOID_CRYSTAL,3,35},{ITEM_SHADOW_ESSENCE,5,50}},
@@ -1198,6 +1255,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_AETHER_WISP] = {
     "Aether Wisp", 135, 114, ELEM_LIGHT,
     140,  80, 24, 14, 36, 30, 16,
+    {N,N,N,N,N,N,N},
     120, 33, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 0, AI_RANDOM,
     REGION_AETHERIA, 32, 38,
     {{ITEM_LIGHT_ESSENCE,3,55},{ITEM_MANA_SHARD,3,35},{ITEM_ASTRAL_DUST,1,15}},
@@ -1206,6 +1264,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_CRYSTAL_ANGEL] = {
     "Crystal Angel", 136, 115, ELEM_LIGHT,
     220,  80, 36, 22, 40, 32, 14,
+    {N,N,N,N,N,N,N},
     180, 48, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 2, AI_HEALER,
     REGION_AETHERIA, 33, 39,
     {{ITEM_LIGHT_ESSENCE,4,50},{ITEM_HOLY_FRAGMENT,2,25},{ITEM_ASTRAL_DUST,2,20}},
@@ -1214,6 +1273,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_DIVINE_GOLEM] = {
     "Divine Golem", 137, 116, ELEM_LIGHT,
     450,  0, 44, 36,  0, 28,  3,
+    {N,N,N,N,N,N,N},
     210, 56, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_AETHERIA, 34, 40,
     {{ITEM_HOLY_FRAGMENT,3,40},{ITEM_LIGHT_ESSENCE,5,55},{ITEM_ASTRAL_DUST,3,25}},
@@ -1222,6 +1282,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_AETHER_KNIGHT] = {
     "Aether Knight", 138, 117, ELEM_LIGHT,
     320,  0, 50, 32,  0, 26, 13,
+    {N,N,N,N,N,N,N},
     220, 58, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 1, AI_AGGRESSIVE,
     REGION_AETHERIA, 34, 40,
     {{ITEM_LIGHT_ESSENCE,5,55},{ITEM_HOLY_FRAGMENT,2,25},{ITEM_STEEL_INGOT,4,30}},
@@ -1230,6 +1291,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_CORRUPTED_ANGEL] = {
     "Corrupted Angel", 139, 118, ELEM_DARK,
     280,  90, 44, 26, 44, 32, 14,
+    {N,N,N,N,N,N,N},
     230, 62, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_AETHERIA, 35, 41,
     {{ITEM_DARK_ESSENCE,5,45},{ITEM_SHADOW_ESSENCE,4,35},{ITEM_VOID_CRYSTAL,2,15}},
@@ -1238,6 +1300,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_VOID_TITAN] = {
     "Void Titan", 140, 119, ELEM_DARK,
     600,  0, 54, 38,  0, 30,  4,
+    {N,N,N,N,N,N,N},
     280, 75, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_AETHERIA, 36, 42,
     {{ITEM_VOIDSTONE,4,40},{ITEM_CHAOS_ORB,2,15},{ITEM_SHADOW_ESSENCE,6,55}},
@@ -1246,6 +1309,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_AETHER_DRAGON] = {
     "Aether Dragon", 141, 120, ELEM_LIGHT,
     600,  0, 54, 32,  0, 32, 12,
+    {N,N,N,N,N,N,N},
     290, 78, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 3, AI_PATTERN,
     REGION_AETHERIA, 36, 42,
     {{ITEM_DRAGON_SCALE,8,60},{ITEM_LIGHT_ESSENCE,6,55},{ITEM_ASTRAL_CORE,1,5}},
@@ -1254,6 +1318,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_FINAL_SHADE] = {
     "Final Shade", 142, 121, ELEM_DARK,
     350,  100, 48, 24, 50, 36, 18,
+    {N,N,N,N,N,N,N},
     260, 70, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 4, AI_REACT,
     REGION_AETHERIA, 36, 42,
     {{ITEM_VOID_CRYSTAL,5,45},{ITEM_SHADOW_ESSENCE,6,55},{ITEM_CHAOS_ORB,2,10}},
@@ -1262,6 +1327,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_HERALD_OF_VOID] = {
     "Herald of Void", 143, 122, ELEM_DARK,
     400,  120, 52, 28, 54, 38, 16,
+    {N,N,N,N,N,N,N},
     300, 80, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 5, AI_BOSS_PHASE,
     REGION_AETHERIA, 37, 43,
     {{ITEM_VOIDSTONE,5,50},{ITEM_CHAOS_ORB,2,12},{ITEM_ASTRAL_DUST,5,45}},
@@ -1270,6 +1336,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_AETHER_COLOSSUS] = {
     "Aether Colossus", 144, 123, ELEM_LIGHT,
     700,  0, 56, 42,  0, 34,  5,
+    {N,N,N,N,N,N,N},
     320, 85, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 5, AI_BOSS_PHASE,
     REGION_AETHERIA, 38, 44,
     {{ITEM_ASTRAL_CORE,1,10},{ITEM_LIGHT_ESSENCE,8,65},{ITEM_HOLY_FRAGMENT,5,50}},
@@ -1280,6 +1347,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_BOSS_SERPENTIS] = {
     "Great Serpentis", 124, 0, ELEM_WATER,
     1200,  0, 45, 28,  0, 22,  8,
+    {N,N,N,N,N,N,N},
     500, 120, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 5, AI_BOSS_PHASE,
     REGION_BOSS, 10, 10,
     {{ITEM_DRAGON_SCALE,5,100},{ITEM_SNAKE_VENOM,5,100},{ITEM_CHAOS_ORB,1,50}},
@@ -1288,6 +1356,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_BOSS_ELDER_TREANT] = {
     "Elder Treant Lord", 125, 1, ELEM_EARTH,
     1500,  60, 48, 36, 20, 26,  3,
+    {N,N,N,N,N,N,N},
     600, 140, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 5, AI_BOSS_PHASE,
     REGION_BOSS, 15, 15,
     {{ITEM_THORN_WOOD,8,100},{ITEM_EARTH_ESSENCE,8,100},{ITEM_TITAN_HEART,1,50}},
@@ -1296,6 +1365,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_BOSS_LICH] = {
     "Lich King Mordael", 126, 2, ELEM_DARK,
     1800,  200, 50, 32, 70, 40, 12,
+    {N,N,N,N,N,N,N},
     750, 180, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 5, AI_BOSS_PHASE,
     REGION_BOSS, 22, 22,
     {{ITEM_ANCIENT_RUNE,8,100},{ITEM_DARK_ESSENCE,8,100},{ITEM_ARCANE_CODEX,1,50}},
@@ -1304,6 +1374,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_BOSS_INFERNO] = {
     "Inferno Dragon", 127, 3, ELEM_FIRE,
     2000,  0, 60, 38,  0, 30, 10,
+    {N,N,N,N,N,N,N},
     900, 220, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 5, AI_BOSS_PHASE,
     REGION_BOSS, 28, 28,
     {{ITEM_DRAGON_SCALE,10,100},{ITEM_ETERNAL_FLAME,3,100},{ITEM_BLADE_HEART,1,50}},
@@ -1312,6 +1383,7 @@ const MonsterDef g_monster_db[MONSTER_COUNT] = {
 [MON_BOSS_VOID_LORD] = {
     "Lord of the Void", 128, 4, ELEM_DARK,
     3000,  300, 70, 44, 80, 50, 14,
+    {N,N,N,N,N,N,N},
     1500, 400, {0xFF,0,0, 0xFF,0,0, 0xFF,0,0}, 5, AI_BOSS_PHASE,
     REGION_BOSS, 40, 40,
     {{ITEM_VOIDSTONE,5,100},{ITEM_ASTRAL_CORE,3,100},{ITEM_ESSENCE_INFINITY,1,100}},

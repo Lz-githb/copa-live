@@ -1,6 +1,7 @@
 #include "char_skill.h"
 #include "character.h"
 #include "../../game/battle/battle_data.h"
+#include "../../game/battle/battle_anim.h"
 #include "gba_types.h"
 
 /* ---- Skill table (ROM) ---------------------------------- */

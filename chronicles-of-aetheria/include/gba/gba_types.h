@@ -37,7 +37,7 @@ typedef u32 BOOL;
 
 /* Memory section attributes */
 #define IWRAM_CODE __attribute__((section(".iwram"), long_call))
-#define IWRAM_DATA __attribute__((section(".iwram")))
+#define IWRAM_DATA __attribute__((section(".iwram.bss")))
 #define EWRAM_DATA __attribute__((section(".ewram")))
 #define EWRAM_BSS  __attribute__((section(".sbss")))
 

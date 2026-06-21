@@ -2,6 +2,7 @@
 #define CHAR_SKILL_H
 
 #include "char_types.h"
+typedef struct Character Character;
 #include "../../game/battle/battle_types.h"
 
 /* =========================================================
@@ -117,20 +118,20 @@ void char_skill_init(void);
 s16 skill_effective_power(u8 skill_id, u8 char_level, s16 scaling_attr_val);
 
 /* Check if character can use skill right now */
-BOOL skill_can_use(const struct Character* ch, u8 char_skill_id);
+BOOL skill_can_use(const Character* ch, u8 char_skill_id);
 
 /* Learn a skill (add to known list, returns FALSE if already known) */
-BOOL skill_learn(struct Character* ch, u8 char_skill_id);
+BOOL skill_learn(Character* ch, u8 char_skill_id);
 
 /* Equip skill to hotbar slot (returns FALSE if not known) */
-BOOL skill_equip_to_slot(struct Character* ch, u8 hotbar_slot, u8 char_skill_id);
+BOOL skill_equip_to_slot(Character* ch, u8 hotbar_slot, u8 char_skill_id);
 
 /* Translate char_skill_id → battle system skill_id for resolution */
 u8 skill_to_battle_id(u8 char_skill_id, u8 char_level,
-                       const struct Character* ch);
+                       const Character* ch);
 
 /* Check if character knows a skill */
-BOOL skill_is_known(const struct Character* ch, u8 char_skill_id);
+BOOL skill_is_known(const Character* ch, u8 char_skill_id);
 
 const CharSkillDef* skill_char_get(u8 id);
 
