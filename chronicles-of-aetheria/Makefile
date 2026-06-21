@@ -69,6 +69,7 @@ CFLAGS  := $(ARCH)                              \
             -I$(INCDIR)/game/item               \
             -I$(INCDIR)/game/quest              \
             -I$(INCDIR)/game/ui                 \
+            -I$(INCDIR)/game/dialogue           \
             -I$(DEVKITPRO)/libgba/include
 
 # ---- Linker Flags -----------------------------------------

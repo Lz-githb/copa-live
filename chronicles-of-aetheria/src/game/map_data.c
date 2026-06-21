@@ -358,10 +358,8 @@ static const MapDef* s_map_list[] = {
     &s_map_1,
 };
 
-/* Called from main() to register everything */
+/* Called from main() to register everything.
+   interact_init is called by dialogue_db_init() with the full tables. */
 void map_data_init(void) {
     world_init(s_map_list, ARRAY_SIZE(s_map_list));
-    interact_init(s_script_table, s_text_table,
-                  ARRAY_SIZE(s_script_table),
-                  ARRAY_SIZE(s_text_table));
 }
