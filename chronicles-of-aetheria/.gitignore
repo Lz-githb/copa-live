@@ -1,0 +1,5 @@
+*.o
+*.elf
+*.gba
+*.map
+*.deb
